@@ -25,3 +25,57 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: Robotics
+      description: 查找机器人学领域的论文
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: SLAM
+          keyword_cn: ''
+          query: S
+        - keyword: robotics
+          keyword_cn: 机器人学
+          query: research papers related to the field of general robotics
+        - keyword: UAV
+          keyword_cn: ''
+          query: U
+        - keyword: VLA/VLN
+          keyword_cn: ''
+          query: U
+        - keyword: reinforcement learning
+          keyword_cn: ''
+          query: r
+      intent_queries:
+        - query: find academic research papers in the general field of robotics
+          query_cn: 查找通用机器人学领域的学术论文
+          enabled: true
+          source: manual
+          note: ''
+        - query: retrieve key studies and reviews related to robotics research
+          query_cn: 检索与机器人学研究相关的重要研究和综述
+          enabled: true
+          source: manual
+          note: ''
+        - query: search for foundational and recent developments in robotics
+          query_cn: 搜索机器人学的基础与最新进展
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-04-29T08:51:12.791Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
