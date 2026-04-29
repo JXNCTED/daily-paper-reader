@@ -4,6 +4,7 @@
   const STORAGE_KEY_PASS = 'dpr_secret_password_v1';
   const SECRET_FILE_URL = 'secret.private';
   const SECRET_OVERLAY_ANIMATION_MS = 280;
+  const DEFAULT_GITHUB_REPO_NAME = 'daily-paper-reader';
   const FORCE_GUEST_DOMAIN_TOKEN = 'ziwenhahaha';
   let secretOverlayHideTimer = null;
   const isForceGuestDomain = (host) => {
@@ -338,6 +339,36 @@
     return results;
   }
 
+  const readConfigYamlForRepo = async () => {
+    const yaml = window.jsyaml || window.jsYaml || window.jsYAML || window.jsYml;
+    if (!yaml || typeof yaml.load !== 'function') {
+      return null;
+    }
+
+    // On custom domains the site root is not always the repository root. Try
+    // the generated docs copy first, then relative/root variants.
+    const candidates = ['docs/config.yaml', 'config.yaml', '../config.yaml', '/config.yaml'];
+    for (const url of candidates) {
+      try {
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) continue;
+        const text = await res.text();
+        const cfg = yaml.load(text || '') || {};
+        const githubCfg = (cfg && cfg.github) || {};
+        if (githubCfg && typeof githubCfg === 'object') {
+          const owner = String(githubCfg.owner || '').trim();
+          const repo = String(githubCfg.repo || '').trim();
+          if (owner || repo) {
+            return { owner, repo };
+          }
+        }
+      } catch {
+        // ignore and try the next deployment layout
+      }
+    }
+    return null;
+  };
+
   // 使用 GitHub Token 推断目标仓库 owner/repo（与订阅面板保持一致的推断规则）
   async function detectGithubRepoFromToken(token) {
     const userRes = await fetch('https://api.github.com/user', {
@@ -361,7 +392,7 @@
 
     if (host === 'localhost' || host === '127.0.0.1') {
       repoOwner = login;
-      repoName = 'daily-paper-reader';
+      repoName = DEFAULT_GITHUB_REPO_NAME;
     } else {
       const githubPagesMatch = currentUrl.match(
         /https?:\/\/([^.]+)\.github\.io\/([^\/]+)/,
@@ -370,28 +401,18 @@
         repoOwner = githubPagesMatch[1];
         repoName = githubPagesMatch[2];
       } else {
-        // 其它域名：尝试从 config.yaml 中读取
-        try {
-          const res = await fetch('/config.yaml');
-          if (res.ok) {
-            const text = await res.text();
-            const yaml =
-              window.jsyaml || window.jsYaml || window.jsYAML || window.jsYml;
-            if (yaml && typeof yaml.load === 'function') {
-              const cfg = yaml.load(text) || {};
-              const githubCfg = (cfg && cfg.github) || {};
-              if (githubCfg && typeof githubCfg === 'object') {
-                if (githubCfg.owner) repoOwner = String(githubCfg.owner);
-                if (githubCfg.repo) repoName = String(githubCfg.repo);
-              }
-            }
-          }
-        } catch {
-          // 忽略 config.yaml 读取失败，后续用兜底逻辑
+        // 其它域名：尝试从当前站点的 config.yaml / docs/config.yaml 中读取
+        const parsedRepo = await readConfigYamlForRepo();
+        if (parsedRepo) {
+          repoOwner = parsedRepo.owner || repoOwner;
+          repoName = parsedRepo.repo || repoName;
         }
 
         if (!repoOwner) {
           repoOwner = login;
+        }
+        if (!repoName) {
+          repoName = DEFAULT_GITHUB_REPO_NAME;
         }
       }
     }
@@ -402,6 +423,13 @@
 
     return { owner: repoOwner, repo: repoName };
   }
+
+  window.DPRSecretSession = Object.assign(window.DPRSecretSession || {}, {
+    __test: {
+      readConfigYamlForRepo,
+      detectGithubRepoFromToken,
+    },
+  });
 
   // 将总结模型 / workflow 所需的大模型配置写入 GitHub Secrets
   // 可选 progress 回调用于在 UI 中展示上传进度：progress(currentIndex, total, secretName)
