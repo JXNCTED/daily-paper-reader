@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.21693v1/fig-001.webp",
+      "caption": "Figure 1: Policy comparison at M = 6, λ = 200, σr = 0.75, σϕ = 0.5 (N = 3000 paired trials). (a) Mean MSEE trajectory with 95% confidence interval. (b) Cumulative control effort. (c) Terminal MSEE distribution with q95 and CVaR90 annotations.",
+      "page": 13,
+      "index": 1,
+      "width": 976,
+      "height": 310
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21693v1/fig-002.webp",
+      "caption": "Figure 2: Best CVaR90 at M = 6, each policy tuned independently over λ. Color shows the gap CVaRH 90 − CVaRW̃90 , positive favoring γW̃ . γW̃ attains lower CVaR90 in 8 of 12 settings.",
+      "page": 18,
+      "index": 2,
+      "width": 979,
+      "height": 1102
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21693v1/fig-003.webp",
+      "caption": "Figure 3: Risk-effort scatter at M = 6. γW̃ achieves both lower CVaR90 and lower effort in 6 of 12 settings.",
+      "page": 19,
+      "index": 3,
+      "width": 979,
+      "height": 1120
+    }
+  ]
+}

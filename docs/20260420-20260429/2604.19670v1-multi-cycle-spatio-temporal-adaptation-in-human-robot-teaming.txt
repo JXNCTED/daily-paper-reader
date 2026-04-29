@@ -1,0 +1,726 @@
+Title: Multi-Cycle Spatio-Temporal Adaptation in Human-Robot Teaming
+
+URL Source: https://arxiv.org/pdf/2604.19670v1
+
+Published Time: Wed, 22 Apr 2026 01:22:24 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Multi-Cycle Spatio-Temporal Adaptation in Human-Robot Teaming 
+
+Alex Cuellar 1, Michael Hagenow 2, Julie Shah 1
+
+Abstract — Effective human-robot teaming is crucial for the practical deployment of robots in human workspaces. However, optimizing joint human-robot plans remains a challenge due to the difficulty of modeling individualized human capabilities and preferences. While prior research has leveraged the multi-cycle structure of domains like manufacturing to learn an individ-ual’s tendencies and adapt plans over repeated interactions, these techniques typically consider task-level and motion-level adaptation in isolation. Task-level methods optimize allocation and scheduling but often ignore spatial interference in close-proximity scenarios; conversely, motion-level methods focus on collision avoidance while ignoring the broader task context. This paper introduces RAPIDDS, a framework that unifies these approaches by modeling an individual’s spatial behavior (motion paths) and temporal behavior (time required to com-plete tasks) over multiple cycles. RAPIDDS then jointly adapts task schedules and steers diffusion models of robot motions to maximize efficiency and minimize proximity accounting for these individualized models. We demonstrate the importance of this dual adaptation through an ablation study in simulation and a physical robot scenario using a 7-DOF robot arm. Finally, we present a user study ( n = 32 ) showing significant plan improvement compared to non-adaptive systems across both objective metrics, such as efficiency and proximity, and subjec-tive measures, including fluency and user preference. See this paper’s companion video at: https://youtu.be/55Q3lq1fINs .
+
+I. I NTRODUCTION 
+
+Advances in robotics are enabling practical deployments across diverse domains. However, in applications like manu-facturing, robots often cannot fully replace human workers, but should rather seamlessly integrate into existing team dynamics. Significant research has explored various teaming techniques to ensure this integration is fluid and effective [20], [3]. One important factor influencing team performance is the quality of the robot’s human model. For example, Lasota et al., showed that in close-proximity tasks, humans were objectively safer and subjectively more comfortable if the robot possessed prior knowledge of their behavior [17]. While significant research has developed techniques that react to human behavior on the fly [22], [26], [29], [12], prior knowledge of an individual’s tendencies can help refine models of behavior and create plans that best work with and around the human teammate from the start of an interaction. Therefore, others have demonstrated the benefits of learning individualized models of human behavior over multiple task cycles, using the information learned from past experience to inform future plans [11], [19]. For example, knowing an individual’s strengths and weaknesses (e.g. dexterity when completing an intricate task) a priori can inform high-level task allocation. Similarly, understanding how a person prefers to move through space (e.g. using right vs left hand on a task)  
+
+> 1MIT CSAIL 2UW Madison Department of Computer Science
+
+Task Adaptation 
+
+Reschedule/Reallocate tasks for e ffi ciency and avoidance 
+
+## T1 T3 T4 T5 T2 
+
+Motion Adaptation 
+
+Steer di ff usion policies to balance e ffi ciency and proximity 
+
+Human Model Update 
+
+Initial Human Model Observe Human Behavior Update Human Model 
+
+Deploy Current Plan Adapt task schedule and 
+
+robot motion Update human model 
+
+## T4  
+
+> Fig. 1. A visualization of the RAPIDDS loop (grey). As the human and robot perform tasks repeatedly, RAPIDDS updates individualized behavior models (green) and jointly adapts schedules (yellow) and motions (blue).
+
+allows a robot to adapt its own motions or schedule tasks to avoid their teammate. Enabling robots to learn and adapt to these individualized tendencies can improve human-robot team effectiveness, safety, and subjective experience. This paper introduces RAPIDDS (Repeated Adaptive Planning via Iterative Deployment of Diffusion and Scheduling), a framework that (1) learns individual models of human movement and duration when completing tasks over repeated iterations and (2) optimizes team plans accounting for this behavior (see Figure 1). Our adaptation mechanism considers both an individual’s task efficiency and their spatial movements. To this end, we formulate a spatial cost function representing the expected proximity between the human and robot and personalize this expected cost via a Bayesian up-date over successive interactions. The human-robot planner combines task-level schedule optimization with motion-level diffusion steering to maximize efficiency and minimize prox-imity. Finally, similar to “exploration-exploitation” tradeoffs in reinforcement learning, early rounds encourage diverse task allocations to learn human behavior on a variety of sub-tasks. This work offers three primary contributions 1 : 
+
+> •
+
+A Bayesian adaptation mechanism that iteratively personalizes models of human spatial and temporal  
+
+> 1See RAPIDDS code at https://github.com/AlexCuellar/RAPIDDS
+> arXiv:2604.19670v1 [cs.RO] 21 Apr 2026
+
+behavior across multiple task cycles.  
+
+> •
+
+An uncertainty-aware planner that optimizes joint task schedules and robot motions to maximize efficiency while minimizing expected human-robot proximity.  
+
+> •
+
+Empirical evidence that RAPIDDS’ spatial and tempo-ral adaptation improves human-robot teaming via a user study considering efficiency, proximity, and preference. II. R ELATED WORK 
+
+Significant research in human-robot teaming has investi-gated techniques that adapt to an individual’s behavior during interaction. However, the majority of work considers one task execution in isolation, reasoning over a human’s goal [10], [29], [7], capability [23], [28], safety [12], [22], or how best to offer assistance [15], [27]. While such techniques demonstrate an ability to react to teammates on the fly, many real world domains involve a predictable repeated structure in which tasks are seen over multilple task cycles (e.g. assembly or food preparation). This structure can be leveraged to learn an individual’s behavior and adapt plans more effectively 
+
+before the next cycle. While understudied, existing work that accounts for this structure (which we refer to as inter-cycle plan adaptation) can be separated into two categories: task-level plan adaptation and motion-level plan adaptation. 
+
+1) Task Adaptation: At the task level, inter-cycle adap-tation models agents’ capabilities, and optimizes task allo-cation or scheduling to maximize performance metrics (e.g. score in a collaborative game or temporal efficiency). Vari-ants of bandit algorithms, for example, have been proposed to allocate tasks to the highest performing agent in a multi-agent setting while maintaining fairness constraints for team cohesion [5], [6]. Exploration/exploitation tradeoffs (similar to those inherent to bandit algorithms) have been applied to inter-cycle adaptation focused on schedule optimization as well. Liu et al, for example, learns how long agents in a collaborative setting take to complete sub-tasks toward a wider goal, and use this model to generate more efficient plans in later rounds of interaction [19]. Similar to bandit algorithms, an “entropy” term in the optimization encourages exploration in early interactions, leading to schedules that may not be optimal, but allow the system to learn more about agents’ capabilities for better informed schedules in the future. Despite adaptation at the task level that can increase team effectiveness and efficiency, such methods ignore the spatial aspect of agents acting in close-proximity, possibly leading to spatial interference or over-conservative plans. 
+
+2) Spatial Adaptation: Motion-level inter-cycle adapta-tion learns a human teammate’s motion while completing a repetitive task, and adapts robot motion to accommodate. These methods often focus on “entrainment”, a phenomenon in which humans performing a repeated task together often fall into a repeated spatial and temporal pattern [2], [11]. Despite roots in cognitive psychology for human-human in-teraction, studies have shown entrainment extends to human-robot interaction [2]. Fourie et al utilized the emergent con-sistency from entrainment to learn a human’s preferred path online, and adapt robot motions to best avoid their teammate [11]. However, entrainment is limited to short time-horizon motions repeated precisely, and does not consider task-level adaptation to avoid interference or increase performance. RAPIDDS combines the performance benefits from task-level adaptation and avoidance benefits of motion-level adap-tation. Via task-level planning, the robot can predict what a human will be doing when, and deploy motions to minimize proximity. Additionally, via learning an individual’s preferred motions, the robot can reschedule tasks and plan motions that optimize for efficiency and minimize spatial interference. 
+
+A. Relationship to Task and Motion Planning 
+
+While this paper focuses primarily on adaptation of team plans, RAPIDDS’ task- and motion-level adaptation and planning lends comparison to Task and Motion Planning (TAMP). However, most multi-agent TAMP frameworks generally consider fully controllable agents in largely static environments [24], [4], [9]. In contrast, the uncertainty and uncontrollability of the human teammate requires additional considerations on both the task and motion level [16], [14]. TAMP methods that incorporate a human teammate nec-essarily relax controllability of the human, and often model uncertainty in aspects of human behavior [1], [14], [8]. However, these approaches limit uncertainty to only the human’s task duration, not their motion. Techniques either assume perfect knowledge of human motions a-priori [21] or plan around the humans in real time [14], [1], [29]. In contrast, RAPIDDS considers uncertainty in human motion and personalizes a model of spatial separation. Additionally, to plan tasks requiring complex motion skills, we use a diffusion steering method to find appropriate motions rather than point-to-point trajectories common in TAMP. III. M ETHODS 
+
+This section details the RAPIDDS framework, which inte-grates three core components: an individualized model of the human teammate’s spatio-temporal behavior, a task sched-uler, and a steerable diffusion motion policy. The human model informs both the scheduler and the diffusion policy. In turn, the scheduler dictates concurrent task allocations to the diffusion model, which then provides the scheduler with robot trajectories and task durations to balance efficiency and proximity. Section III-A describes the problem statement. Section III-B then describes an example virtual environment used throughout the paper, followed by Section III-C giving an overview of the adaptive planning algorithm central to our contribution. Finally, Section III-D describes a genetic algorithm to optimize safe and efficient schedules and Sec-tion III-E describes our technique for modeling individual teammates’ tendencies when completing tasks. 
+
+A. Problem Setting 
+
+We model human-robot team planning as a multi-objective optimization problem. The objective function accounts for three factors: total makespan (the time required to complete all tasks), agent distance (a penalty for close human-robot proximity), and diversity. Analogous to “exploration” in online reinforcement learning, the diversity term encourages varied allocation of tasks to the human during early interac-tion rounds, enabling the system to learn human tendencies and produce more informed plans in later cycles [19]. Let τ represent the set of tasks to be scheduled, where each task τi ∈ τ is defined by its start time τ si and end time τ fi . We define binary assignment variables Aai ∈ { 0, 1}
+
+to indicate whether task τi is assigned to agent a ∈ { h, r }.Additionally, integer variables rai track the number of times agent a has completed τi in previous rounds. Precedence constraints are defined by the set P, where a tuple (i, j ) ∈ P 
+
+implies that task τi must conclude before τj begins ( τ fi <τ sj ). For human-robot proximity, spatial cost Si(ξrj ) penalizes the expected separation distance between a robot trajectory 
+
+ξrj and a concurrent human task τi. We assume access to a learned diffusion policy π that samples robot trajectories: 
+
+ξrj ∼ π(j, {Si(·) | τi ∈ C j }) (1) Here, each trajectory ξ is a sequence of points [x1, x2, . . . ]
+
+where xt ∈ Rd. The diffusion planner is conditioned on task 
+
+j (via one-hot encoding) and is steered by the spatial costs 
+
+{Si(·)} of the set of human tasks Cj expected to occur con-currently with the robot’s execution of τj (see Section III-C). A complete schedule is defined as the tuple T = ⟨τ r , τ h, ξr ⟩,where τ r and τ h are the task sequences assigned to the robot and human, respectively, and ξr contains the corresponding robot trajectories. The optimization is formulated as follows: 
+
+min     
+
+> T=⟨τr ,τh,ξr⟩
+
+zt + γz s + λz d (2) 
+
+zt = max 
+
+> τi∈τ
+
+τ fi (3) 
+
+zs = X  
+
+> j:τj∈τr
+
+max 
+
+> i:τi∈C j
+
+Si(ξrj ) (4) 
+
+zd = 12|τ | 
+
+> |τ|
+
+X
+
+> i=1
+
+" X
+
+> a∈{ r,h }
+
+"
+
+12
+
+X
+
+> a′∈{ r,h }
+
+ra′
+
+> i
+
+!
+
+− rai
+
+## 
+
+(5) 
+
+1 = X
+
+> a
+
+Aai ∀ τi ∈ τ (6) 
+
+0 = X
+
+> i,j,a
+
+Aai Aaj 1[max( τ si , τ sj ) < min( τ fi , τ fj )] (7) 
+
+τ fi < τ sj ∀ (i, j ) ∈ P (8) 
+
+τ fi −τ si > d ri τi ∈ τ , A ri = 1 (9) 
+
+τ fi −τ si > d hi τi ∈ τ , A hi = 1 (10) The overall objective (Eq 2) is a linear combination of three objectives (Eqs 3 - 5). The temporal objective (Eq 3) minimizes the total task makespan. The spatial objective (Eq 4) minimizes the sum of maximum concurrent spatial cost 
+
+Si(ξrj ) over robot tasks τ r . The diversity objective (Eq 5, called “entropy” in [19]) encourages diverse task allocation across multiple cycles. γ and λ mediate the tradeoff between the three objectives. To ensure plan validity, the optimization is subject to constraints: Eq 6 ensures tasks are assigned to exactly one agent; Eq 7 prevents multiple concurrent tasks to one agent; and Eq 8 enforces precedence orderings. 0 1
+
+> 32
+
+# A B       
+
+> Fig. 2. The “fetch” environment used in this paper. The human (yellow icon) and robot (blue icon) must collect the objects (red icons) and return them “home” (brown squares). Figure A shows the task index for fetching each object. Two strategies for τ3are shown, Middle (A) and Outside (B).
+
+Equations 9 and 10 define the task intervals by ensuring the time between start ( τ si ) and finish ( τ fi ) reflects the re-spective agent’s duration. We treat these duration constraints separately because the scheduler possesses different levels of control and certainty for each agent. Robot durations drj are fixed by the chosen trajectory ξrj , whereas human durations are stochastic variables, dhi ∼ N (μi, σ 2 
+
+> i
+
+), with parameters estimated over cycles of the human-robot task. As pointed out by [19], this stochasticity means schedule optimization is intractable by MILP methods common in many scheduling domains [13]. Therefore, we take inspiration from [19], and instead optimize the task schedule directly over the assignment and ordering of tasks via a genetic algorithm rather than over task start and end times themselves. 
+
+B. Example Environment 
+
+We use a virtual fetching task as a running example (Fig-ure 2). The environment consists of a human player (yellow), a robot player (blue), and four target objects (red) partitioned by walls (black). Agents must fetch objects individually and return them to their respective “home” locations (brown) before proceeding to the next. The objects are indexed as 
+
+τ = {τ0, τ 1, τ 2, τ 3}, with precedence constraints requiring the bottom two objects ( τ2, τ 3) to be collected before the top two (τ0, τ 1). Formally, P = {(τ2, τ 0), (τ2, τ 1), (τ3, τ 0), (τ3, τ 1)}.While τ0 and τ1 have single-mode traversal paths, τ2 and 
+
+τ3 allow for two distinct motion modes: a “middle” and an “outside” strategy (see Figures 2.A and 2.B respectively). Even in this simple setup, the human’s tendencies (e.g., speed and common path) and the spatial weight γ signif-icantly influence the optimal plans. For instance, because 
+
+τ2 and τ3 must be completed first, the robot may initially sample the less efficient but safer “outside” strategy for τ3
+
+while the human completes τ2 to account for uncertainty in the human’s motion. Alternatively, a lower γ may lead RAPIDDS to prioritize efficiency, sampling the “middle” strategy despite uncertainty. RAPIDDS balances these trade-offs between proximity and efficiency while iteratively learn-ing an individual’s behavior over repeated tasks. 
+
+C. Algorithm Overview 
+
+RAPIDDS aims to learn the distribution over human task durations (i.e. μ = {μ1, μ 2, .., }, σ2 = {σ21 , σ 22 , ... }) and N=1 N=2 N=3 N=6 
+
+# N=1 N=2 N=3 N=6 Fig. 3. Adaptation of spatial cost si(x) over multiple observations of two human strategies for task τ2: “middle” (top) and “outside” (bottom). 
+
+spatial tendencies ( Si(ξ)) and optimize future schedules to incur the lowest expected cost according to the objective in Eq 2. Algorithm 1 describes the adaptation framework. The algorithm requires initial human task completion parameters ( ˆμ, ˆσ2), spatial cost functions ( Si(ξ) ∀ τi ∈ τ ), and a diffusion model π. Each of the I task cycles begins by initializing a memory dictionary M (Line 3), which maps combinations of concurrent human and robot tasks to specific robot trajectories. Next, a set of C initial candidate schedules is generated using Earliest Deadline First (EDF) scheduling [25] (Line 4); while these are guaranteed to be feasible, they are likely sub-optimal. Candidates are then evaluated and ranked via the objective from Eq 2 (line 6). This evaluation involves applying Algorithm 2, and determines robot trajectories ξr for each candidate. A subset of the highest-performing candidates then undergo an evolution step, which generates a new population of schedules (Line 7; see Section III-D). This cycle of evaluation and evolution continues for G generations, at which point the best plan is deployed (Line 9). During deployment, the human and robot execute their tasks, and the robot records the human’s task durations ( dhi ) and spatial trajectories ( ξhi ). Finally, the human temporal models ( ˆμ, ˆσ2) and spatial cost functions 
+
+Si(ξ) are updated using these observations (Lines 11–12). 
+
+D. Genetic Scheduling with Trajectory Adaptation 
+
+Following [19], we represent each schedule as a sequence of tasks per agent rather than using precise start and end times. For the environment in Figure 2, a candidate schedule may assign the sequences τ h = [ τ2, τ 1] and τ r = [ τ3, τ 0]
+
+to the human and robot respectively. In prior work, this representation fully defined a team strategy: because spatial interference is not considered, each agent simply executed their next task as soon as precedence constraints were met. However, our inclusion of a spatial objective renders this representation insufficient. Consider a case where the human’s trajectory for τ1 overlaps with the robot’s path for 
+
+τ0, incurring a high spatial cost. In this scenario, it may be more beneficial for the robot to wait until the human completes τ1 before beginning τ0. Standard task sequences cannot explicitly encode this idling. Therefore, we introduce “wait” tasks wi, which signify that an agent must not proceed to the next step until task τi is finished. In our example, the robot’s sequence would be updated to τ r = [ τ3, w 1, τ 0].The evolution step in Algorithm 1 generates C candidate schedules by “mutating” the high-performing schedules from the previous optimization round. Liu et al., define three mu-tation operators—swapping tasks between agents, reordering tasks within an agent’s sequence, and “crossover” (swapping entire agent sequences after a specific point) [19]. To manage spatial interference, we introduce two new operators:  
+
+> •
+
+Add Wait Constraint: Inserts a wait task wi at a random position within an agent’s sequence.  
+
+> •
+
+Remove Wait Constraint: Deletes an existing wait task from a sequence. To ensure schedule validity after mutation, we remove wait tasks if (1) wi and its target τi are assigned to the same agent, or (2) the wait task is the final step in a schedule. 
+
+Algorithm 1: Multi-Cycle Schedule Adaptation  
+
+> 1
+
+Input: ˆμ, ˆσ2, Si(ξ), π 
+
+> 2
+
+for I Cycles do  
+
+> 3
+
+M ← {}  
+
+> 4
+
+τ r , τ h ← { EDF( ˆμ, ˆσ2) for i in C } 
+
+> 5
+
+for G generations do  
+
+> 6
+
+[z], [ξr ], M ← EvalSchedules( [τ r ], [τ h], ˆμ, ˆσ,
+
+Si(·), π, dr 
+
+> init
+
+, M ) 
+
+> 7
+
+[T ] ← Evolve( [T ]), [T ] = [ ⟨τ r , τ h, ξr ⟩] 
+
+> 8
+
+end  
+
+> 9
+
+{dhi , ξ hi ∀ τi ∈ τ h} ← Deploy( Tbest ) 
+
+> 10
+
+for τi ∈ τ h do  
+
+> 11
+
+ˆμi, ˆσ2 
+
+> i
+
+← Update( dhi ) 
+
+> 12
+
+Si(ξ) ← Update( ξhi ) 
+
+> 13
+
+end  
+
+> 14
+
+end 
+
+The evaluation step (Algorithm 2) assigns an expected cost to each candidate schedule and samples robot trajectories from π that optimize the efficiency-proximity tradeoff. If a schedule violates precedence constraints in P, it is assigned an infinite cost (Line 2). For feasible schedules, the algorithm initializes Cj , the set of human tasks expected to overlap with each robot task τj (Line 3). Additionally, as sampled trajectories’ durations may differ from initial estimates ( dr 
+
+> init
+
+), we initialize an auxiliary overlap set C′ 
+
+> j
+
+to track changes in overlaps (Line 4). Lines 7–13 generate the robot trajectories 
+
+ξ = {ξrj ∀ τj ∈ τ r }. To reduce computation, if a trajectory for task τj given the same concurrent tasks Cj exists in memory M, it is reused (Line 8). Otherwise, we sample a new trajectory from the diffusion policy π and store it in M
+
+(Lines 11–12). We use SVDD-PM steering [18] to minimize the value function mediating efficiency and proximity: 
+
+V (ξrj ) = drj + γ max 
+
+> i:τi∈C j
+
+Si(ξrj ) (11) where drj is the duration of sampled trajectory ξrj (Line 15). Since diffusion models sample constant-length sequences, drj
+
+is the time at which the task is completed in the trajectory. 
+
+Algorithm 2: Schedule Evaluation  
+
+> 1
+
+Input: τ r , τ h, ˆμ, ˆσ, Si(ξ), π, dr 
+
+> init
+
+, M 
+
+> 2
+
+if Infeasible( τ r , τ h) then return ∞, None, M; 
+
+> 3
+
+Cj ← Overlaps( τ h, τ r , ˆμ, dr 
+
+> init
+
+) ∀ τj ∈ τ r 
+
+> 4
+
+C′ 
+
+> j
+
+← None ∀ τj ∈ τ r 
+
+> 5
+
+while ∃ τj ∈ τ r s.t. Cj̸ = C′ 
+
+> j
+
+do  
+
+> 6
+
+ξ ← ∅ , T ← ∅  
+
+> 7
+
+for τj ∈ τ r do  
+
+> 8
+
+if (τj , Cj ) ∈ M .keys then  
+
+> 9
+
+ξ[τj ] ← M [τj , Cj ] 
+
+> 10
+
+else  
+
+> 11
+
+ξ[τj ] ∼ π(j, {Si(·) ∀τi ∈ C j }) 
+
+> 12
+
+M[τj , Cj ] ← ξ[τj ] 
+
+> 13
+
+end  
+
+> 14
+
+end  
+
+> 15
+
+dr ← Durations (ξ) 
+
+> 16
+
+for K Iterations do  
+
+> 17
+
+dh ← { dhi ∼ N (ˆ μi, ˆσ2 
+
+> i
+
+) ∀ τi ∈ τ h} 
+
+> 18
+
+T .add(Makespan( τ h, τ r , dh, dr ))  
+
+> 19
+
+end  
+
+> 20
+
+C′ 
+
+> j
+
+← C j 
+
+> 21
+
+Cj ← Overlaps( τ h, τ r , ˆμ, dr ) ∀ τj ∈ τ r 
+
+> 22
+
+end  
+
+> 23
+
+zt ← Average( T ) 
+
+> 24
+
+zs ← P  
+
+> j:τj∈τ r
+
+max i:τi∈C j Si(ξrj ) 
+
+> 25
+
+z = zt + γz s + λDiversity (τ h, τ r ) 
+
+> 26
+
+return z, ξ, M
+
+The plan’s makespan is then estimated by sampling human task durations K times and averaging the results (Lines 16–19). Based on the updated robot task durations, the over-lapping sets Cj are recalculated (Lines 20–21). If these sets differ from C′ 
+
+> j
+
+, trajectory generation repeats with the updated overlaps (Line 5). Once converged, the final temporal, spatial, and diversity costs are calculated and returned alongside the trajectories ξ and updated memory M (Lines 23–26). 
+
+E. Adaptation Mechanism 
+
+In this section, we describe updates to RAPIDDS’ model of human behavior spatially (where the teammate is while completing tasks) and temporally (their task durations). 
+
+1) Spatial Adaptation: RAPIDDS requires a spatial cost function Si(ξr ) to quantify the expected proximity between the human and robot during concurrent robot trajectory ξr
+
+and human task τi. We first define a “point cost” for a robot position xr ∈ Rd relative to a human trajectory ξhi :
+
+si(xr , ξ ih) .
+
+= max 
+
+> xh∈ξhi
+
+exp( −β|| xh − xr || 2). (12) The expected cost based on the distribution over human trajectories is given by: 
+
+si(xr ) = Eξih [si(xr , ξ hi )] (13) This represents the expected negative exponential distance between the point in ξhi closest to robot position xr . For a new teammate, we initialize the cost function using Mi prior observations from other human teammates ( ξp, 1 
+
+> i
+
+. . . ξ p,M ii ) as: 
+
+si(xr ) .
+
+= 1
+
+MiMiX
+
+> m=1
+
+max 
+
+> xh∈ξp,m i
+
+exp( −β|| xh − xr || 2) (14) When observing a new teammate’s trajectory ξhi and its resulting cost si(xr , ξ hi ), the robot performs a Bayesian update to estimate an individual’s “true cost” s∗ 
+
+> i
+
+(xr ):
+
+p(s∗ 
+
+> i
+
+(xr )|si(xr , ξ hi )) = p(si(xr , ξ hi )|s∗ 
+
+> i
+
+(xr )) p(s∗ 
+
+> i
+
+(xr )) (15) Where the likelihood of an observed trajectory cost is: 
+
+p(si(xr , ξ hi )|s∗ 
+
+> i
+
+(xr )) ∼ N (s∗(xr ), ρ ) (16) and ρ is a hyperparameter modeling the expected variance of spatial cost for one individual. Figure 3 shows adaptation of 
+
+s2(xr ) for the fetching task from III-B for two individuals. For computational efficiency, we do not store and de-termine costs via the full observation history. Instead, we evaluate si(xr ) at V uniformly sampled points across the workspace and approximate the continuous cost function via a neural network. After each cycle, the costs at these V points are updated via Eq. 15, and the networks for all human tasks 
+
+τ h are retrained. In practice, this convergence takes only a few seconds. The trajectory-level cost Si(ξr ) is then defined as the maximum point cost along the robot path: 
+
+Si(ξr ) = max   
+
+> xr∈ξr
+
+si(xr ) (17) Conceptually, this approximates the negative exponential of the expected minimum distance between any two points in the robot and human trajectories. 
+
+2) Temporal Adaptation: Updates to the human temporal parameters (ˆ μ, ˆσ2) are performed using a joint Bayesian framework. For each task i, the posterior distribution of the mean and variance given an observed human duration dhi is: 
+
+P (ˆ μi, ˆσ2 
+
+> i
+
+| dhi ) = N (dhi | ˆμi, ˆσ2 
+
+> i
+
+)P (ˆ μi, ˆσ2 
+
+> i
+
+) (18) Where the joint prior P (ˆ μi, ˆσ2 
+
+> i
+
+) is a Normal-Inverse-Gamma distribution ( μ is modeled a gaussian and σ as an Inverse-Gamma, as is common). Here, ν serves as a precision 0 2 4 6 8 10 12 14                      
+
+> Iterations
+> 15
+> 16
+> 17
+> 18
+> 19
+> 20
+> Total Cost
+> =0
+> "Slow Middle" Improvements in Total Cost
+> Space + Time
+> Space
+> Time
+> No Adaptation 0246810 12 14
+> Iterations
+> 10.0
+> 10.5
+> 11.0
+> 11.5
+> 12.0
+> 12.5
+> 13.0
+> Total Cost
+> =0
+> "Fast Outside" Improvements in Total Cost
+> Space + Time
+> Space
+> Time
+> No Adaptation 0246810 12 14
+> Iterations
+> 11.0
+> 11.5
+> 12.0
+> 12.5
+> 13.0
+> 13.5
+> 14.0
+> 14.5
+> Total Cost
+> =0
+> "Fast Middle" Improvements in Total Cost
+> Space + Time
+> Space
+> Time
+> No Adaptation 0246810 12 14
+> Iterations
+> 18
+> 19
+> 20
+> 21
+> 22
+> 23
+> Total Cost
+> =0
+> "Slow Outside" Improvements in Total Cost
+> Space + Time
+> Space
+> Time
+> No Adaptation
+
+Fig. 4. Plan cost over 16 cycles of the fetch task (See Section III-B) across differing adaptation levels: space+time (orange), space (blue dashed), time 
+
+(red dot-dash), and none (black dotted). We test four human archetypes, left to right: Fast Outside , Slow Middle , Fast Middle , Slow Outside 
+
+parameter informing the model’s initial mean ˆμi, while α
+
+and β govern the shape and scale of the Inverse-Gamma distribution over the variance ˆσ2 
+
+> i
+
+. These hyperparameters can be pre-defined or initialized using population-level statistics. IV. E XPERIMENTS 
+
+In this section, we demonstrate RAPIDDS’ adaptation to individuals in teamwork scenarios and the benefits of personalization. Evaluations include an ablation study using the example environment from Section III-B, a scenario with a real robot performing a collaborative object painting scenario, and a user study with the same painting task. 
+
+A. Fetch Environment Ablation Study 
+
+We evaluate the RAPIDDS framework via an ablation study using the virtual “fetch” game (Section III-B). We set the initial diversity weight to λ = 15 and spatial weight to γ = 1 .75 (which initially encourages the robot to take riskier Middle motion; see Figure 2). Following [19], λ
+
+remains constant for the first half of the cycles to encourage diverse task assignment before dropping to zero to prioritize optimal planning. The ablation removes either spatial adap-tation (updating only temporal models), temporal adaptation (updating only spatial models), or both. We simulate four human archetypes defined by their movement speed (“fast” vs. “slow”) and spatial strategy for objects 2 and 3 (“middle” vs. “outside”). “Middle” and “outside” motions are shown in the top and bottom rows of Figure 3 respectively. Figure 4 presents the median and interquartile range (IQR) performance for all adaptation levels and archetypes over 20 trials using 16 interaction cycles per trial. RAPIDDS consistently meets or exceeds the performance of less adap-tive systems; specifically, it identifies lower-cost plans than spatial-only adaptation for three archetypes and temporal-only adaptation for two archetypes. In early rounds (before the vertical red line), systems exhibit non-optimal behavior across all scenarios due to the diversity objective. Qualita-tively, the improvement of team strategies across archetypes underscores RAPIDDS’ ability to generate diverse, person-alized plans tailored to specific human behavior. 
+
+B. Collaborative Painting 
+
+To demonstrate RAPIDDS in a physical setting, we de-signed a human-robot scenario for mixing and applying paint LEFT RIGHT 
+
+MIX 
+
+A B
+
+C D  
+
+> Robot Robot (No Adaptation) Human
+
+Fig. 5. Brush task and robot behavior with RAPIDDS: A) The brush task setting, B) Spatial cost function without adaptation and resulting interference between the human and robot, C) Spatial cost function adapted to left handed user. The Unconstrained variant results in switching the order of Mix L and 
+
+Mix R to avoid the user. D) Spatial cost function adapted to left handed user. The Constrained variant results in less efficient but more avoidant motions. 
+
+to a workpiece. The process involves five tasks (Figure 5.A shows the setting, see video for full execution). Two tasks are always assigned to the human: unscrewing a tabletop vice (Prep Vise ) and securing the workpiece ( Secure Piece ). Two tasks are always assigned to the robot: transferring paint from the left and right trays into a central mixing bowl ( Mix L and 
+
+Mix R respectively). We investigate two procedural variants: 
+
+Unconstrained , where the robot mixing order is flexible, and 
+
+Constrained , where Mix R must precede Mix L . Once paint is mixed and the piece is secured, the final task—applying the paint ( Brush )—may be allocated to either teammate. In this scenario, we explore two kinds of variations in human behavior. First, individuals vary in hand preference when executing Secure Piece . Identifying whether a person uses their left or right hand is critical; for instance, a robot executing Mix L may obstruct or come uncomfortably close to a human using their left hand (Figure 5.B). Because Secure Piece follows Prep Vise , the robot must commit to a mixing order before observing the human’s hand preference within a single cycle. RAPIDDS addresses this by learning an individ-ual’s tendencies over time to optimize planning from the start of each cycle. Second, we vary human brushing rates—which may be slower or faster than the robot—influencing optimal assignment of the Brush task to maximize team efficiency. With Space Adapt No Space Adapt  
+
+> 0.4
+> 0.3
+> 0.2
+> 0.1
+> 0.0
+> 0.1
+> 0.2
+> Spatial Cost Change
+> (Lower is Better)
+> Spatial Cost Adaptation Comparison
+> Hand / Speed
+> left / slow
+> left / fast
+> right / slow
+> right / fast With Time Adapt No Time Adapt
+> 6
+> 4
+> 2
+> 0
+> 2
+> 4
+> 6
+> Temporal Cost Change
+> (Lower is Better)
+> Temporal Cost Adaptation Comparison
+> Hand / Speed
+> left / slow
+> left / fast
+> right / slow
+> right / fast
+
+Fig. 6. User study plan costs with and without adaptation. We separate the effect of spatial adaptation and cost (left) from temporal adaptation and cost (right). Individuals’ costs are shown, marked with differences in participant training for speed (magenta vs. green) and donimant hand (“x” vs. dot). 
+
+For simplicity, this discussion assumes the human prefers their left hand for Secure Piece . Additionally, we focus discussion of adaptation on learning spatial tendencies, as temporal adaptation has been more extensively studied [19], [14]. We explore RAPIDDS when varying (1) Constrained 
+
+vs Unconstrained mix order and (2) spatial weight γ.
+
+Unconstrained, γ = 12 : Initially, RAPIDDS chooses a random order of Mix L and Mix R due to uncertainty in the human’s preferred hand. A low γ prioritizes efficiency over avoidance, potentially leading to interference (Figure 5.B). However, after learning this individual uses their left hand, RAPIDDS schedules Mix L first during Prep Vise , and thus avoids the person during Secure Piece (Figure 5.C). 
+
+Constrained, γ = 12 : The first round plays out identically to the prior scenario. However, since the constrained case must complete Mix L after Mix R and cannot reorder to avoid the human during Secure Piece , diffusion steering samples a less efficient but avoidant motion for Mix L (Figure 5.D). 
+
+Unconstrained, γ = 25 : With a moderate γ, the RAPIDDS diffusion steering will choose more conservative but less efficient motions concurrent with Secure Piece in the first round due to uncertainty in the human’s preferred hand (Figure 5.D). After learning the human’s preference, the planner achieves both low proximity and high efficiency by ordering Mix L to occur before Secure Piece (Figure 5.C). 
+
+Unconstrained, γ = 85 : At a high γ, even conserva-tive motions are deemed too risky under uncertainty. The scheduler initially inserts wait tasks to prevent any robot motion during Secure Piece . Once the preference is learned, RAPIDDS resumes the optimal task ordering ( Mix L then 
+
+Mix R ) to ensure safety without idling (Figure 5.C). Even in this relatively simple painting scenario, RAPIDDS can adapt to various human behavior in diverse ways. 
+
+C. Collaborative Painting: User Study 
+
+To validate the efficacy of RAPIDDS over multiple in-teraction cycles, we conducted an IRB-approved user study (n = 32 ) using the painting task described in Section IV-B. After a consent process, participants (aged 18–35, median 22) were trained on the task until achieving consistent performance (typically 5–8 rounds). To simulate diverse real-S:True T:True S:True T:False S:False T:True S:False T:False 
+
+> Condition
+> 1
+> 2
+> 3
+> 4
+> Ranking (Lower is Better)
+
+Participant Ranking By Condition (Spatial/Temporal) 
+
+> S:True T:True
+> S:True T:False
+> S:False T:True
+> S:False T:False
+
+Fig. 7. User study participants’ rankings of the four systems with differing adaptation levels. Spatially adaptive systems are preferred. 
+
+world behaviors, participants were “primed” during training: half were instructed to use their right hand for Secure Piece 
+
+while the other half used their left. Additionally, half were trained to perform Brush quickly, while the rest performed it slowly. Following training, each participant completed seven rounds of the task with four distinct systems: full adaptation (RAPIDDS), spatial-only adaptation, temporal-only adapta-tion (equivalent to [19]), and non-adaptive. System ordering was counterbalanced using a Latin square design. After each system trial, participants completed a fluency survey, which included an item added for physical interference: “The robot got in the way of me completing my tasks.” The study concluded with a forced-choice ranking of the four systems by preference and a demographic survey. Figure 6 illustrates the reduction in spatial and temporal costs, measured as the difference between the first round and the mean of the final three rounds. A two-way repeated measures ANOVA confirmed that spatial adaptation led to a significant decrease in spatial cost ( p < . 001 ), while temporal adaptation significantly reduced temporal cost ( p < . 005 ). These results underscore the framework’s ability to refine its human model and enable efficient and avoidant interactions. Figure 7 shows participants’ ranking of systems. We see a significantly improved ranking of systems with spatial adap-tation (p <.005) via a Wilcoxon rank sum test. Analysis of the survey via an ART ANOVA additionally shows the subjective impact of spatial adaptation, with statements including “The human-robot team worked fluently together” , “The human-robot team improved over time” , “The robot’s performance improved over time” , and “The robot got in the way of me completing my tasks” showing significant (p <0.05) improve-ment with spatial adaptation. Such improvements show the importance of spatial adaptation for subjective preference and comfort beyond objective measures. V. L IMITATIONS 
+
+While RAPIDDS demonstrates clear advantages over sys-tems that adapt to only spatial or temporal patterns, several limitations remain. First, RAPIDDS assumes consistent be-havior from a human over time. However, effects like fatigue and reactions to robot activity may cause shifts in a human’s behavior. Future work may consider methods that recognize and query a teammate concerning shifts in behavior to better model and adapt to future patterns. Second, RAPIDDS assumes a static efficiency-proximity tradeoff γ. However, some individuals in the user study seemed more or less comfortable with close robot proximity. Therefore, adapating the efficiency-proximity tradeoff itself via communication or observation of the human teammate may be a promising direction for further personalization. Finally, while RAPIDDS considers adaptation and plan-ning before each task round, reactivity during task execution remains important and deployed systems would likely benefit from both inter-cycle and reactive on-the-fly adaptation. Future work may consider the integration of reactive planners during task execution with RAPIDDS’ inter-cycle planning. VI. C ONCLUSION 
+
+This paper introduces RAPIDDS, a framework for multi-cycle spatio-temporal adaption of human-robot team plans. This framework uses a genetic scheduling technique that optimizes for team efficiency over multiple task cycles while penalizing concurrent tasks that bring the human and robot in close proximity. Additionally, a diffusion policy selects motions for tasks that are steered to optimize a tradeoff of efficiency and safety. Finally, we show the benefits of adaptation at both temporal and spatial levels to create task schedules and motions that benefit safety and efficiency. REFERENCES [1] A. Akbari, M. Diab, and J. Rosell, “Contingent task and motion planning under uncertainty for human–robot interactions,” Applied Sciences , vol. 10, no. 5, p. 1665, 2020. [2] E. Ansermin, G. Mostafaoui, X. Sargentini, and P. Gaussier, “Unin-tentional entrainment effect in a context of human robot interaction: an experimental study,” in 2017 26th IEEE international symposium on Robot and Human Interactive Communication (RO-MAN) . IEEE, 2017, pp. 1108–1114. [3] M. Carroll, R. Shah, M. K. Ho, T. Griffiths, S. Seshia, P. Abbeel, and A. Dragan, “On the utility of learning about humans for human-ai coordination,” Advances in neural information processing systems ,vol. 32, 2019. [4] J. Chen, J. Li, Y. Huang, C. Garrett, D. Sun, C. Fan, A. Hofmann, C. Mueller, S. Koenig, and B. C. Williams, “Cooperative task and motion planning for multi-arm assembly systems,” arXiv preprint arXiv:2203.02475 , 2022. [5] Y. Chen, A. Cuellar, H. Luo, J. Modi, H. Nemlekar, and S. Nikolaidis, “Fair contextual multi-armed bandits: Theory and experiments,” in 
+
+Conference on Uncertainty in Artificial Intelligence . PMLR, 2020, pp. 181–190. [6] H. Claure, Y. Chen, J. Modi, M. Jung, and S. Nikolaidis, “Multi-armed bandits with fairness constraints for distributing resources to human teammates,” in Proceedings of the 2020 ACM/IEEE International Conference on Human-Robot Interaction , 2020, pp. 299–308. [7] A. Cuellar, C. K. Fourie, and J. A. Shah, “An alignment-based approach to learning motions from demonstrations,” IEEE Robotics and Automation Letters , 2025. [8] M. Faroni, M. Beschi, S. Ghidini, N. Pedrocchi, A. Umbrico, A. Or-landini, and A. Cesta, “A layered control approach to human-aware task and motion planning for human-robot collaboration,” in 2020 29th IEEE international conference on robot and human interactive communication (RO-MAN) . IEEE, 2020, pp. 1204–1210. [9] M. Faroni, A. Umbrico, M. Beschi, A. Orlandini, A. Cesta, and N. Pedrocchi, “Optimal task and motion planning and execution for multiagent systems in dynamic environments,” IEEE Transactions on Cybernetics , vol. 54, no. 6, pp. 3366–3377, 2023. [10] J. F. Fisac, A. Bajcsy, S. L. Herbert, D. Fridovich-Keil, S. Wang, C. J. Tomlin, and A. D. Dragan, “Probabilistically safe robot planning with confidence-based human predictions,” arXiv preprint arXiv:1806.00109 , 2018. [11] C. Fourie, “Real-time anticipation and entrainment in human-robot interaction,” Ph.D. dissertation, Massachusetts Institute of Technology, 2024. [12] C. K. Fourie, N. Figueroa, and J. A. Shah, “On-manifold strategies for reactive dynamical system modulation with non-convex obstacles,” 
+
+IEEE Transactions on Robotics , 2024. [13] M. Gombolay, A. Bair, C. Huang, and J. Shah, “Computational design of mixed-initiative human–robot teaming that considers human factors: situational awareness, workload, and workflow preferences,” 
+
+The International journal of robotics research , vol. 36, no. 5-7, pp. 597–617, 2017. [14] A. Gottardi, M. Terreran, E. Pagello, and E. Menegatti, “Had-tamp: Human adaptive task and motion planning for human-robot collabo-ration in industrial scenario,” Robotics and Autonomous Systems , p. 105318, 2025. [15] E. C. Grigore, A. Roncone, O. Mangin, and B. Scassellati, “Preference-based assistance prediction for human-robot collaboration tasks,” in 2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . IEEE, 2018, pp. 4441–4448. [16] H. Guo, F. Wu, Y. Qin, R. Li, K. Li, and K. Li, “Recent trends in task and motion planning for robotics: A survey,” ACM Computing Surveys , vol. 55, no. 13s, pp. 1–36, 2023. [17] P. A. Lasota and J. A. Shah, “Analyzing the effects of human-aware motion planning on close-proximity human–robot collaboration,” Hu-man factors , vol. 57, no. 1, pp. 21–33, 2015. [18] X. Li, Y. Zhao, C. Wang, G. Scalia, G. Eraslan, S. Nair, T. Biancalani, S. Ji, A. Regev, S. Levine, et al. , “Derivative-free guidance in contin-uous and discrete diffusion models with soft value-based decoding,” 
+
+arXiv preprint arXiv:2408.08252 , 2024. [19] R. Liu, M. Natarajan, and M. C. Gombolay, “Coordinating human-robot teams with dynamic and stochastic task proficiencies,” ACM Transactions on Human-Robot Interaction (THRI) , vol. 11, no. 1, pp. 1–42, 2021. [20] M. Natarajan, E. Seraj, B. Altundas, R. Paleja, S. Ye, L. Chen, R. Jensen, K. C. Chang, and M. Gombolay, “Human-robot teaming: grand challenges,” Current Robotics Reports , vol. 4, pp. 81–100, 2023. [21] S. Pellegrinelli, A. Orlandini, N. Pedrocchi, A. Umbrico, and T. Tolio, “Motion planning and scheduling for human and industrial-robot collaboration,” CIRP Annals , vol. 66, no. 1, pp. 1–4, 2017. [22] A. Pupa, M. Arrfou, G. Andreoni, and C. Secchi, “A human-centered dynamic task scheduling and safe task execution approach for human-robot collaboration scenarios.” IET, 2023. [23] A. Pupa, W. Van Dijk, C. Brekelmans, and C. Secchi, “A resilient and effective task scheduling approach for industrial human-robot collaboration,” Sensors , vol. 22, no. 13, p. 4901, 2022. [24] S. Shaw, A. Curtis, L. P. Kaelbling, T. Lozano-P´ erez, and N. Roy, “Towards practical finite sample bounds for motion planning in tamp,” 
+
+arXiv preprint arXiv:2407.17394 , 2024. [25] J. A. Stankovic, M. Spuri, K. Ramamritham, and G. Buttazzo, Dead-line scheduling for real-time systems: EDF and related algorithms .Springer Science & Business Media, 1998, vol. 460. [26] V. V. Unhelkar, S. Li, and J. A. Shah, “Semi-supervised learning of decision-making models for human-robot collaboration,” in conference on Robot Learning . PMLR, 2020, pp. 192–203. [27] S. Vats, M. Zhao, P. Callaghan, M. Jia, M. Likhachev, O. Kroemer, and G. Konidaris, “Optimal interactive learning on the job via facility location planning,” arXiv preprint arXiv:2505.00490 , 2025. [28] S. Zhang, Y. Chen, J. Zhang, and Y. Jia, “Real-time adaptive assembly scheduling in human-multi-robot collaboration according to human capability,” in 2020 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 2020, pp. 3860–3866. [29] X. Zhang, D. Huang, and K. Youcef-Toumi, “Relevance-driven deci-sion making for safer and more efficient human robot collaboration,” in 2025 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 2025, pp. 5899–5905.

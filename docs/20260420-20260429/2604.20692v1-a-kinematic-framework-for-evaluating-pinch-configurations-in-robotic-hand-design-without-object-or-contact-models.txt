@@ -1,0 +1,714 @@
+Title: A Kinematic Framework for Evaluating Pinch Configurations in Robotic Hand Design without Object or Contact Models
+
+URL Source: https://arxiv.org/pdf/2604.20692v1
+
+Published Time: Thu, 23 Apr 2026 01:08:07 GMT
+
+Number of Pages: 17
+
+Markdown Content:
+# A Kinematic Framework for Evaluating Pinch Configurations in Robotic Hand Design without Object or Contact Models 
+
+# HyoJae Kang 1, Joonho Lee 1, Hyunmok Jung 1, and Dong Il Park 1,∗
+
+> 1
+
+# Advanced Robotics Research Center, Korea Institute of Machinery & Materials (KIMM) 
+
+> ∗
+
+# Corresponding author 
+
+# Abstract 
+
+Evaluating the pinch capability of a robotic hand is im-portant for understanding its functional dexterity. How-ever, many existing grasp evaluation methods rely on ob-ject geometry or contact force models, which limits their applicability during the early stages of robotic hand de-sign. This study proposes a kinematic evaluation method for analyzing pinch configurations of robotic hands based on interactions between fingertip workspaces. First, the reachable workspace of each fingertip is computed from the joint configurations of the fingers. Then, feasible pinch configurations are detected by evaluating the re-lationships between fingertip pairs. Since the proposed method does not require information about object geom-etry or contact force models, the pinch capability of a robotic hand can be evaluated solely based on its kine-matic structure. In addition, analyses are performed on four different kinematic structures of the hand to investi-gate their impact on the pinch configurations. The pro-posed evaluation framework can serve as a useful tool for comparing different robotic hand designs and analyzing pinch capability during the design stage. 
+
+# 1 Introduction 
+
+The human hand is one of the body’s most functional and essential parts, capable of carrying out a wide range of daily tasks [1, 2]. It is considered one of the most complex and sophisticated tools that humans rely on for daily tasks [3]. Inspired by the versatility of the human hand, robotic systems have been equipped with various end-effectors designed to perform similar functions [4]. Robotic hands have been widely utilized to replace hu-man workers in heavy, repetitive, and hazardous working environments [5–7]. To perform such tasks, a wide range of robotic grip-pers and hands have been developed, ranging from simple two-finger grippers with low degrees of freedom (DoF) to multi-finger robotic hands and anthropomorphic hands that resemble the human hand structure. Recently, the demand for robotic systems capable of operating in hu-man environments has increased [8]. These systems are 
+
+> 0This manuscript has been submitted for possible publication.
+
+expected to perform collaborative tasks with humans and grasp objects with various shapes and sizes [9]. As a result, the development of robotic hands with enhanced grasping versatility and adaptability has become an im-portant research topic. To handle a wide variety of objects, robotic hands re-quire a high level of dexterity. Dexterous robotic hands aim to achieve grasping and manipulation capabilities similar to those of the human hand. Dexterity has been widely used to describe the skillfulness of robotic equip-ment, particularly in robotic hands. Previous studies have categorized dexterity evaluation methods into sev-eral groups based on the aspects of performance they measure [10]. One category is potential dexterity, which evaluates the set of reachable hand configurations with-out considering object interaction. Potential dexterity reflects the diversity of possible hand postures and the inherent capability of the hand mechanism. This cat-egory includes measures such as kinematic redundancy and thumb opposability. Kinematic redundancy refers to the availability of multiple joint configurations that can achieve the same end-effector state, while thumb oppos-ability evaluates the ability of the thumb to interact with other fingers. Thumb opposability is commonly assessed using methods such as workspace overlap between the thumb and other fingers [11,12] or the Kapandji test [13]. Another category is grasp dexterity, which evaluates the set of stable hand configurations when grasping an object. This approach is often based on grasp taxonomy, which classifies different grasp types according to the con-tact relationships between the hand and the object [10]. Grasp taxonomy provides insight into the variety of grasp strategies that a robotic hand can achieve when inter-acting with objects. The third category is manipulabil-ity dexterity, which evaluates the ability to change the position and orientation of a grasped object within the workspace while maintaining stable contact [1]. This con-cept is commonly used to assess the capability of robotic hands to perform object manipulation tasks after a stable grasp has been established. In the design of robotic hands, particularly anthropo-morphic hands, dexterity is often considered an impor-tant performance indicator because it is closely related to the potential capability of the hand to perform various 1
+
+> arXiv:2604.20692v1 [cs.RO] 22 Apr 2026
+
+tasks. Evaluating dexterity during the design stage can therefore help predict the performance of a robotic hand before it is physically constructed. While some robotic hands are designed for specific tasks, many designs aim to achieve general-purpose functionality. In such cases, it is difficult to evaluate the expected task performance in advance because the objects to be manipulated and the corresponding task trajectories are not explicitly defined. Furthermore, many evaluation methods require assump-tions about contact models between the hand and the object, which makes it challenging to apply them during the early stages of hand design when such information is unavailable. While these dexterity evaluation methods provide use-ful insights into the general capabilities of robotic hands, they do not directly indicate whether specific grasp con-figurations can be formed. In practical manipulation tasks, the ability to realize particular grasp types is often more relevant than the overall variety of hand postures. Among various grasp types, pinch grasps are widely used for precise object handling and frequently appear as a fundamental grasp configuration. Therefore, analyzing the capability of a robotic hand to form pinch configura-tions can provide useful insight into its potential grasping functionality. Motivated by this observation, this study focuses on evaluating pinch configurations in a five-finger robotic hand. In particular, this study proposes a method to analyze four types of pinch grasp based on the reach-able hand postures obtained through kinematic analysis. Since the evaluation is performed using reachable config-urations of the hand, the proposed method does not rely on force or torque models. Therefore, the proposed ap-proach allows the pinch capability of a robotic hand to be evaluated solely from its kinematic structure. This makes the method particularly suitable for the early de-sign stage, where detailed information about objects and contact conditions is typically unavailable. In practical grasping situations, many factors such as grasping force, object shape, size, weight, and friction coefficient affect the grasp stability. However, these factors are excluded in order to focus on a purely kinematic analysis of hand postures. This approach allows the structural characteris-tics of the robotic hand to be evaluated during the design stage without requiring detailed information about the object or task. The main contributions of this study are summarized as follows: 1. A kinematic evaluation method for analyzing pinch configurations with respect to four types of pinch grasp. 2. Quantitative analysis of pinch configurations for anthropomorphic five-finger hands with different degree-of-freedom configurations. 3. Comparative evaluation of thumb–finger pinch en-abled by thumb opposability and non-thumb pinch configurations between other fingers. The remainder of this paper is organized as follows. Section 2 introduces the five-fingered hands and the types of pinch grasp considered in this study, as well as the evaluation methods. Section 3 describes the kinematic structures of the four hands analyzed in this work. Sec-tion 4 presents three methods for evaluating pinch grasp. Section 5 analyzes the reachable configurations of the hands and presents the evaluation results. Finally, Sec-tion 6 summarizes the conclusions and contributions of this study, and Section 7 discusses the limitations of the work and directions for future research. 
+
+# 2 Related Works 
+
+Multi-finger robotic hands have been extensively stud-ied to achieve versatile grasping and manipulation ca-pabilities. Compared with simple two-finger grippers, multi-finger hands provide richer contact combinations and enable a wider range of grasp configurations. Vari-ous five-finger robotic hands have been developed in pre-vious works [14–27], differing in the number of DoF as-signed to each finger and thumb in Table 1. Typically, finger joints provide flexion/extension(F/E) and abduc-tion/adduction(A/A) motions, while the thumb includes additional opposition/reposition(O/R) motion that en-ables interaction with other fingers. These structural dif-ferences influence the reachable contact regions between fingers and affect the types of grasp configurations that can be achieved. Table 1: Comparison of finger and thumb DoF in existing robotic hands Description DoF (Finger) (Thumb) Mini X [14], IH2 Azzurra [15] 2 3ILDA [16], HRI hand [17] 3 3Manopla [18], Handroid [19] 3 4ORCA [20] MCR Hand III [21] 4 4Gifu Hand III [23] HX5-D20 [22] RAPID Hand [24] Wave [25], Shadow [26] 4 5MM Hand 1.0 [27] Pinch grasp plays an important role in precise object handling. In pinch grasp, objects are typically held be-tween the thumb and one or more opposing fingers, en-abling accurate positioning and stable contact control. The ability of the thumb to oppose other fingers is con-sidered one of the key characteristics of the human hand. 2These approaches provide insight into the potential inter-action between the thumb and other fingers but do not directly evaluate specific pinch configurations that may occur during grasping tasks. From the perspective of grasp function, pinch tech-niques have also been classified into several representative categories. Previous research [28] classifies pinch tech-niques into four categories: pulp pinch, tip pinch, lateral pinch, and three-jaw chuck pinch. A lateral pinch refers to a grasp in which force is applied between the radial side of the index finger’s middle phalanx and the pad of the thumb [29]. A pulp pinch is defined as a pinch gen-erated between the pad of another finger and the pad of the thumb [30]. Depending on which finger is involved, pulp pinches can be further classified as pulp-2, pulp-3, up to pulp-5 pinch [31]. A tip pinch occurs when the tip of the thumb opposes the tip of another finger to gener-ate the pinching force [32]. In a three-jaw chuck pinch, an object is positioned between the tip of the distal pha-lanx of the fingers and the pad of the thumb. This grasp is closely related to the pulp-to-pulp pinch, in which the pad of the thumb’s distal phalanx contacts the pad of the distal phalanx of the fingers [33]. These human pinch types provide useful references for designing robotic pinch configurations. Although these classifications describe different func-tional forms of pinch grasp, they do not provide a sys-tematic method for evaluating whether a robotic hand can realize these pinch interactions. Existing approaches commonly focus on kinematic dexterity, grasp taxonomy, or manipulability indices to assess the overall performance of robotic hands. However, these methods do not explic-itly evaluate pinch configurations between specific fingers. If the reachable area is unknown, infeasible grasps may be attempted, or the evaluation may require a long com-putation time [34]. While identifying the reachable area is important, it is also crucial to distinguish the feasible regions for each grasp configuration. Therefore, a quan-titative evaluation framework for robotic pinch configu-rations is required. In particular, systematic evaluation methods comparing pinch configurations involving thumb opposition and those without the thumb remain limited. Therefore, this study proposes an evaluation framework for pinch configurations in a five-finger robotic hand. The proposed framework evaluates representative pinch inter-actions based on reachable configurations. First, distal phalanx alignment is analyzed to evaluate pulp pinch and three-jaw chuck pinch, as well as pinching interactions that occur among the fingers without the involvement of the thumb. Second, lateral pinch capability is evaluated by analyzing the posture and distance between the thumb pad and the radial side of the index finger. Specifically, the feasible area for the lateral pinch is extended laterally, not only at the middle phalanx but across all phalanges. Third, tip pinch capability is assessed based on the dis-tance between fingertip contact points. The tip pinch is considered not only between the thumb and the index finger but also in relation to the thumb and the other fingers. Through these evaluations, the proposed method provides a quantitative analysis of pinch interaction ca-pabilities in robotic hands. 
+
+# 3 Kinematic Structures 
+
+In this section, the kinematic structures of the five-fingered hand are introduced. The hand configuration is crucial for assessing grasp success, robustness, intended object pose, and even the shape of the grasped object [35]. Therefore, in this study, evaluations are conducted for a total of four different hand configurations. First, based on Table 1, the ranges of DoF for the finger and the thumb can be identified. Based on these ranges, the possible kinematic structures are illustrated in Fig. 1. First, the hand illustrated in Fig. 1(a) consists of four fingers and one thumb. Each finger has four DoF, enabling three DoF of F/E motion and one DoF of A/A motion. The thumb has five DoF, enabling three DoF of F/E motion, one DoF of A/A motion, and one DoF of O/R motion. The DoF of the finger listed in Table 1 range from two to four. However, in the case composed of only three DoF of F/E motion, as shown in Fig. 1(b), this configuration can be represented by removing the A/A actuation angle from the finger shown in Fig. 1(a). In addition, when the A/A motion is removed from the three DoF finger composed of two DoF of F/E motion and one DoF of A/A motion, as shown in Fig. 1(c), it becomes equivalent to a two DoF finger. The DoF of the thumb listed in Table 1 range from three to five. However, the case implemented by removing the offset and suppressing the actuation angle from the five DoF thumb shown in Fig. 1(a), as illustrated in Fig. 1(e), was excluded from the analysis. Fig. 1(d) shows a case in which the motion is realized through a different arrangement of DoF. In this study, the considered finger structures are the four DoF finger (Fig. 1(a)) and the three DoF finger (Fig. 1(c)). For the thumb, the considered structures are the five DoF thumb (Fig. 1(a)) and the four DoF thumb (Fig. 1(d)). Therefore, a total of four combinations are considered in the analysis. Next, the kinematic parameters corresponding to the combinations considered in this study are introduced. Since the structure shown in Fig. 1(a) has the largest number of DoF, the parameters of the other configura-tions were determined based on the values of this struc-ture. It should also be noted that more variations can be considered depending on the kinematic parameters, off-sets, and initial installation angles. First, a coordinate frame Poxoyozo is defined with re-spect to the origin Po indicated in Fig. 1(a). The offset from Po to the location corresponding to the first DoF of the thumb is denoted as a′
+
+> 1
+
+. The lengths between the finger joints are denoted as a′
+
+> 2
+
+, a′
+
+> 3
+
+, a′
+
+> 5
+
+, and a′
+
+> 6
+
+. For struc-3Figure 1: Kinematic structures of robotic hand (a) 21-DoF hand, (b) Cases of 3-DoF finger, (c) Cases of 4-DoF thumb tural simplification, the x-axes of z′ 
+
+> 1
+
+and z′ 
+
+> 2
+
+are parallel to the xo axis, and there is no offset along the zo direc-tion. For the four DoF finger shown on the left side of Fig. 1(c), the x′ 
+
+> 1
+
+axis and the z′ 
+
+> 2
+
+axis are parallel to the 
+
+xo axis. In addition, the z′ 
+
+> i
+
+axes ( i = 1 to end) represent the actuation axes, and the actuation angle at each axis is denoted by θ′
+
+> i
+
+.Next, for the fingers, the index finger is installed at a position located at a distance d1 from the origin Po
+
+along the zo direction. The middle, ring, and little fingers are also located at the same distance. In addition, these fingers are arranged at equal intervals of a2 along the 
+
+−yo direction with respect to the index finger. All fingers have identical dimensions, and the lengths of the finger segments are a4, a5, and a6. In the case shown on the right side of Fig. 1(b), the fingers are installed at the same locations, and the lengths of the finger segments are a4 and a5. The zi axes ( i = 2 to end) correspond to the actuation axes, and the actuation angle at each axis is denoted by θi. The motion configurations for the four cases considered are summarized in Table 2. Table 2: DoF configuration of the finger and thumb for each case Cases Finger Thumb 3-DoF 4-DoF 4-DoF 5-DoF 1 O X O X2 O X X O3 X O O X4 X O X OFirst, the kinematic parameters of Case 4, which has the largest number of DoF, are considered. For the lengths of the finger segments, the index finger length ratios reported in [36] were referenced. Let the total fin-ger length in Fig. 1(a) be denoted as lf . The length ratios of each segment are then given as follows: 
+
+a4 = 0 .51 lf and a5 = 0 .27 lf and a6 = 0 .22 lf . (1) The segment length ratios of the thumb were deter-mined based on [37]. Let the total thumb length in Fig. 1(a) be denoted as lt. The length ratios of each segment are given as follows: 
+
+a′ 
+
+> 2
+
+= 0 .47 lt and a′ 
+
+> 6
+
+= 0 .31 lt and a′ 
+
+> 7
+
+= 0 .22 lt. (2) Let the distance from the index finger to the little fin-ger be defined as the hand width (HW). Based on the ratio between the hand width and overall hand length (HL) presented in [38], the average value is determined as follows: 
+
+HW = 3 a2 and HL = d1 + lf and HW = 0 .54 HL. 
+
+(3) Table 3: Kinematic parameter ratios based on the hand length - identical for four cases HL HW lf lt a1 a′ 
+
+> 0
+
+a′
+
+> 1
+
+1 0.54 0.45 0.51 0.18 0.1 0.1 This represents an attempt to construct the hand di-mensions to be similar to those of a human hand, and different results may be obtained if these values are mod-ified. In addition, the offsets a′ 
+
+> 0
+
+and a′
+
+> 1
+
+, which correspond to the offsets from the palm, were set to 0.1 of the overall 4Table 4: Kinematic parameter ratios based on the hand length for four cases Case a3 a4 a5 a′ 
+
+> 2
+
+a′
+
+> 3
+
+, a ′ 
+
+> 6
+
+a′
+
+> 4
+
+, a ′
+
+> 7
+
+1 0.23 0.22 - 0.24 0.16 0.11 2 0.23 0.22 - 0.24 0.16 0.11 3 0.23 0.12 0.10 0.24 0.16 0.11 4 0.23 0.12 0.10 0.24 0.16 0.11 hand length. Also, the length of fingers and thumb were set to 0.45 and 0.51 of the overall hand length. For the three DoF finger in Case 1, there is one fewer F/E joint. In this case, the length of the third segment was included in the length of the second segment. It should be noted that the dimensions presented in Section 3 are not absolute values. The kinematic pa-rameters should be appropriately adjusted according to the user’s design intent, mechanism, and mechanical com-ponents arrangement. The kinematic structures consid-ered in this work were implemented through adjustments based on existing studies. Even when different configu-rations are used, it is necessary to modify and apply the parameters appropriately based on the structural charac-teristics. 
+
+# 4 Evaluation Methods 
+
+Pinch configuration refers to the geometric relationship between the thumb and the opposing finger during pinch contact. To evaluate different pinch configurations, the following metrics are considered. First, a method for eval-uating pulp pinch, jaw chuck pinch, and the pulp pinch re-gion performed without the thumb is introduced based on the distal phalanx alignment between the thumb and the other fingers. Next, a method for evaluating lateral pinch performed by the thumb and the index finger is described. Finally, a method for evaluating tip pinch performed by the thumb and the remaining fingers is presented. 
+
+# 4.1 Distal phalanx alignment 
+
+Figure 2 illustrates the opposing area between two fin-gers according to their relative postures. Even when point contact occurs between the fingertip and the object dur-ing grasping, an opposing area must exist to ensure a stable grasp using the fingertips. To evaluate such conditions, the normal vector of the fingertip directed toward the object can be utilized. Fac-tors such as finger thickness are not considered. How-ever, in a real human hand, the curved surface of the fingertip enables stable grasping across various finger pos-tures. Figure 3(a) presents an example of this situation. To evaluate grasp conditions regardless of finger posture while considering the possible directions of the fingertip, the phalanx containing the fingertip is modeled as a cylin-
+
+Figure 2: Opposing area based on two-finger facing con-figuration 
+
+Figure 3: Contactable range avilable for grasping when the fingertip contact surface is assumed as a cylinder der. The normal vectors of each finger, denoted as ni
+
+(i = 1 to 5 ), are shown in Fig. 1. Figure 3(b) shows a cross-sectional contact configura-tion when an object is grasped using five fingertips, where the height dimension is not considered. Since the direc-tions of the fingertip normal vectors differ from one an-other, the contactable range of each fingertip is illustrated on the right side of Fig 3(b). In practice, the normal vec-tor directions of the fingertips can vary over a wide range. This wide range is assumed to account for grasping con-figurations such as those shown in Fig. 4(b), where the object may be grasped using the thumb and little finger. Accordingly, the feasible contact region for each fingertip is defined within the range of -90 ◦ to 90 ◦, as shown in Fig. 3(b). However, without thumb involvement, the contact configuration between the index finger and mid-dle finger can vary, including cases such as those shown in Fig 4(a), where the index finger is above the middle finger, the index finger is below the middle finger, or the middle finger contacts the radial side of the index finger. Therefore, the contactable range was exceptionally set to allow up to 360 ◦.For pinch configurations involving the thumb, the eval-uation assumes that pinch grasping is performed based on 5Figure 4: Examples of the contactable state: (a) without using the thumb, (b) using the thumb the opposability of the thumb when the pinch configura-tion of the five fingertips is considered. This assumption reflects the characteristic motion of the thumb, which en-ables grasping by opposing the other fingers. The vectors pointing from the distal joint to the fingertip should be mutually parallel at the final rotational joint of each fin-ger. Algorithm 1 illustrates the evaluation procedure for distal phalanx alignment. 
+
+Algorithm 1 Distal Phalanx Alignment Evaluation 
+
+Require: Qt, Q f : set of thumb and finger joint config-urations 
+
+Ensure: Wt, W f : set of evaluated joint configurations  
+
+> 1:
+
+Initialize empty sets Wt, W f // t: thumb, f : finger  
+
+> 2:
+
+for each thumb configuration qt ∈ Qt do  
+
+> 3:
+
+Compute thumb last joint pjt and fingertip pet  
+
+> 4:
+
+vt ← normalize( pet − pjt ) 
+
+> 5:
+
+for each qf ∈ Qf where f ∈ { i, m, r, l } do  
+
+> 6:
+
+Compute finger last joint pjf and fingertip pef  
+
+> 7:
+
+vf ← normalize( pef − pjf ) 
+
+> 8:
+
+if |1−(v t ·vf )| < ϵ then //parallel condition  
+
+> 9:
+
+α1 ← vt · pjt , α2 ← vt · pet  
+
+> 10:
+
+β1 ← vt · pjf , β2 ← vt · pef  
+
+> 11:
+
+It ← [min( α1, α 2), max( α1, α 2)]  
+
+> 12:
+
+If ← [min( β1, β 2), max( β1, β 2)]  
+
+> 13:
+
+Lovr ← min(max It, max If ) −
+
+max(min It, min If ) 
+
+> 14:
+
+if Lovr > 0 then  
+
+> 15:
+
+Add pet to Wt 
+
+> 16:
+
+Add pef to Wf 
+
+> 17:
+
+end if  
+
+> 18:
+
+end if  
+
+> 19:
+
+end for  
+
+> 20:
+
+end for  
+
+> 21:
+
+return Wt, W f
+
+The distal joint positions and fingertip positions of the thumb and the other fingers are defined. For the thumb, 
+
+Pjt , P et ∈ R3 denote the distal joint position and the fin-gertip position of the thumb, respectively. For the other fingers, Pjf , P ef ∈ R3 (f ∈ i, m, r, l ) represent the distal joint position and the fingertip position of each finger, re-spectively, where i, m, r, and l denote the index, middle, ring, and little fingers. Each position is calculated using forward kinematics as follows. 
+
+Pet = F K t(qt) and Pef = F K f (qf ). (4) Here, qt and qf denote the joint angles of the thumb and the other fingers, respectively. The unit direction vectors of the distal phalanges are defined as follows: vt = Pet − Pjt 
+
+∥Pet − Pjt ∥ and vf = Pef − Pjf 
+
+∥Pef − Pjf ∥ . (5) Here, the vectors v t and v f are normalized vectors with unit magnitude. To satisfy the parallel alignment condi-tion, the distal links of the thumb and the finger must have the same axial direction, which is expressed by the following condition: 
+
+|1 − vTt vf | < ϵ. (6) where ϵ denotes a numerical tolerance and indicates the case in which the two vectors have nearly identical directions. This condition verifies axial alignment. However, the parallel condition alone is insufficient to determine whether the two vectors are located in posi-tions where interaction is possible. Therefore, as illus-trated in Fig. 2, an overlapping region between the op-posing finger segments should exist. The investigation of the overlapping region can be divided into two cases: when the finger overlaps the thumb from the upper side and when it overlaps from the lower side. To evaluate whether the thumb and the opposing fin-ger form a feasible configuration, the distal phalanges are modeled as line segments rather than being described only by directional relationships. Specifically, the distal seg-ments of the thumb and the finger are defined as 
+
+St = {Pjt + λ(Pet − Pjt ) | 0 ≤ λ ≤ 1}, (7a) 
+
+Sf = {Pjf + μ(Pef − Pjf ) | 0 ≤ μ ≤ 1}. (7b) where Pjt and Pet denote the base and tip of the thumb distal phalanx, and Pjf and Pef denote the middle and distal endpoints of the opposing finger. Overlap is eval-uated along the axial direction of the thumb distal seg-ment. The projected scalar coordinates of the segment endpoints are defined as 
+
+α1 = v Tt Pjt , α 2 = v Tt Pet , (8a) 
+
+β1 = v Tt Pjf , β 2 = v Tt Pef . (8b) The projected intervals of the thumb and the finger distal segments are expressed as 6It = [min( α1, α 2), max (α1, α 2)] , (9a) 
+
+If = [min( β1, β 2), max( β1, β 2)] . (9b) The overlap length Lovr between the two projected in-tervals is then given by 
+
+Lovr = min(max It, max If ) − max(min It, min If ). (10) A valid configuration is finally identified when satis-fying Lovr ≥ 0. This ensures that the thumb and finger distal phalanges are not only aligned in direction, but also geometrically share a common axial region, thereby pro-viding a stricter and physically more meaningful criterion for pinch feasibility. Next, for the case where the thumb is not used, the objective is to determine the region that has a common contactable range among the four remaining fingertips excluding the thumb. Similarly, the condition that the fingertip x-axis direction vectors are parallel is applied, and the overlap condition between finger segments can be obtained by changing the reference from the thumb to the index finger. By replacing the thumb with the index finger in Algorithm 1 and defining the middle to little fingers as Qf , the corresponding results can be obtained. 
+
+# 4.2 Lateral pinch 
+
+Lateral pinch is defined as a grasping motion in which an object is grasped using the distal segment of the thumb and all phalanges of the index finger. Algorithm 2presents the lateral pinch evaluation procedure. First, the contactable region of the index finger is defined as the half of the contactable area in Fig. 3 that faces the thumb. Here, the contactable points according to the joint configurations of the index finger are defined along the straight line segments connecting adjacent joints. As described in Section 4.1, the distance between the unit direction vector v t of the distal phalanx of the thumb and the region formed by the joints of the index finger is denoted as dlp . Let the maximum span of the lateral pinch be dlpm . By considering the joint configurations of the thumb and index finger and the distance between the corresponding regions as variables, the feasible region for lateral pinch can be obtained through the overlap detec-tion described in Section 4.1. Considering the postures of the thumb and index finger, the yo coordinate of the thumb contact point observed in the coordinate frame 
+
+Poxoyozo, as shown in Fig. 1(a), is constrained not to be smaller than the yo coordinate of the index finger contact point. In addition, the xo coordinate of the thumb con-tact point, expressed in the coordinate frame Poxoyozo,is constrained to lie within the xo-range defined by the corresponding phalanx segment of the index finger. In this process, fingertip points are not detected directly; instead, points within the detected phalanges of each fin-ger are obtained. 
+
+Algorithm 2 Lateral Pinch Evaluation 
+
+Require: Qt, Q i : set of thumb and index joint configu-rations 
+
+Ensure: Wt, W i : set of evaluated configurations  
+
+> 1:
+
+Initialize empty sets Wt, W i // t: thumb, i: index finger  
+
+> 2:
+
+for each qt ∈ Qt do  
+
+> 3:
+
+Compute thumb joint position pjt and fingertip 
+
+pet  
+
+> 4:
+
+for each qi ∈ Qi do  
+
+> 5:
+
+Compute index joint position pji and fingertip 
+
+pei  
+
+> 6:
+
+for each dspan ∈ Dspan do  
+
+> 7:
+
+for st = 0 to 1 step ∆ s1 do  
+
+> 8:
+
+plat ← pjt + st(pet − pjt ) //on thumb  
+
+> 9:
+
+for si = 0 to 1 step ∆ s1 do  
+
+> 10:
+
+plai ← pji + si(pei − pji ) //on in-dex  
+
+> 11:
+
+if |∥ plat − plai ∥ − dspan | < ϵ then  
+
+> 12:
+
+if plat (yo) ≥ plai (yo) then  
+
+> 13:
+
+Si ← set of index phalanx  
+
+> 14:
+
+if plat (xo) ∈ S i then  
+
+> 15:
+
+Add pet to Wt 
+
+> 16:
+
+Add pei to Wi 
+
+> 17:
+
+end if  
+
+> 18:
+
+end if  
+
+> 19:
+
+end if  
+
+> 20:
+
+end for  
+
+> 21:
+
+end for  
+
+> 22:
+
+end for  
+
+> 23:
+
+end for  
+
+> 24:
+
+end for  
+
+> 25:
+
+return Wt, W i
+
+# 4.3 Tip pinch 
+
+Tip pinch is defined as a grasping motion in which the thumb and the other fingers grasp an object using the fingertip points. Algorithm 3 presents the tip pinch eval-uation method. For fingertip grasping, unlike the cylindrical grasp con-sidered in Fig. 3, the evaluation focuses on the finger posture and the distance between the fingertips. Since the finger posture involved in tip pinch corresponds to a con-figuration where the fingers are inclined toward the palm rather than satisfying the parallel condition described in Section 4.1, the unit direction vector v t described in Sec-tion 4.1, the unit direction vector v f of the distal phalanx of the other finger should not be parallel. Therefore, the following condition should be satisfied: 
+
+|vTt vf | < 1 (11) The distal joints of the two fingers should not intersect. Considering the posture between the two fingers, the zo
+
+coordinate of the thumb contact point observed in the coordinate frame Poxoyozo shown in Fig. 1(a) is con-7strained not to be smaller than the zo coordinate of the contact point of the other finger. As described in Section 4.1, the distance between the thumb endpoint Pet and the endpoint of the other finger Pef is denoted as dtp , and the maximum span of the tip pinch is denoted as dtpm . By considering the joint configurations of the fingers and the distance between the two fingertip points as variables, the region where tip pinch is feasible can be detected. In the tip pinch evaluation, the endpoints of each finger are de-tected. Also, considering the contactable range of the fin-gers, in the Poxoyozo frame the y-axis value of the thumb was constrained to be not smaller than that of the index finger, and the z-axis value of the thumb was constrained to be not greater than that of the index finger. 
+
+Algorithm 3 Tip Pinch Evaluation 
+
+Require: Qt, Q f : set of thumb and finger joint config-urations ( f ∈ { i, m, r, l })
+
+Ensure: Wt, W f : set of evaluated joint configurations  
+
+> 1:
+
+Initialize empty sets Wt, W f 
+
+> 2:
+
+for each qt ∈ Qt do  
+
+> 3:
+
+Compute thumb last joint pjt and fingertip pet  
+
+> 4:
+
+vt ← normalize( pet − pjt ) 
+
+> 5:
+
+for each qf ∈ Qf do  
+
+> 6:
+
+Compute finger last joint pjf and fingertip pef  
+
+> 7:
+
+vf ← normalize( pef − pjf ) 
+
+> 8:
+
+df ← ∥ pet −pef ∥ //distance between fingertips  
+
+> 9:
+
+for each dspan ∈ Dspan do  
+
+> 10:
+
+if 1 − | vt · vf | > 0 then //non-parallel  
+
+> 11:
+
+if pet (yo) ≥ pef (yo) then //posture  
+
+> 12:
+
+if pef (zo) ≥ pet (zo) then //posture  
+
+> 13:
+
+if |df − dspan | < ϵ then  
+
+> 14:
+
+Add pet to Wt 
+
+> 15:
+
+Add pef to Wf 
+
+> 16:
+
+end if  
+
+> 17:
+
+end if  
+
+> 18:
+
+end if  
+
+> 19:
+
+end if  
+
+> 20:
+
+end for  
+
+> 21:
+
+end for  
+
+> 22:
+
+end for  
+
+> 23:
+
+return Wt, W f
+
+Based on the three methods described above, this study can detect the pinch configurations that can be generated by a five-fingered hand. By classifying and evaluating each pinch motion, the results can be used to estimate the performance of the kinematic structure during the design process. 
+
+# 5 Analysis and Results 
+
+In this section, the process and results of deriving the detected points relative to the reachable points are de-scribed according to the four proposed kinematic struc-ture configurations and the pinch motions. First, forward kinematics is performed, and based on this, the reachable region is derived according to the allowable joint angle ranges of each joint. Subsequently, the results are ob-tained using the detection algorithms described in the previous section. For the first case, distal phalanx align-ment is described for all four cases, and in this process, the results according to the tolerance and the detection angle interval are presented together. For lateral pinch and tip pinch, the results of the four cases are presented according to the specified tolerance, detection angle in-terval, and detection distance. Table 5: DH Table for five DoF Thumb 
+
+i αi−1 ai−1 di θi
+
+1 0 a′ 
+
+> 0
+
+0 θ′
+
+> 1
+
+2 -π/2 a′ 
+
+> 1
+
+0 θ′
+
+> 2
+
+3 π/2 a′ 
+
+> 2
+
+0 π/2 4 π/2 0 0 θ′
+
+> 4
+
+5 -π/2 0 0 -π/2 6 -π/2 0 0 θ′
+
+> 6
+
+7 0 a′ 
+
+> 6
+
+0 θ′
+
+> 7
+
+8 0 a′ 
+
+> 7
+
+0 0Table 6: DH Table for four DoF Middle Finger 
+
+i αi−1 ai−1 di θi
+
+1 π/2 0 0 π/2 2 π/2 a1 d2 θ2
+
+3 -π/2 0 0 θ3
+
+4 0 a3 0 θ4
+
+5 0 a4 0 θ5
+
+6 0 a5 0 0Table 7: DH Table for four DoF Thumb 
+
+i αi−1 ai−1 di θi
+
+1 0 a′ 
+
+> 0
+
+0 θ′
+
+> 1
+
+2 -π/2 a′ 
+
+> 1
+
+0 θ′
+
+> 2
+
+3 π/2 a′ 
+
+> 2
+
+0 θ′
+
+> 3
+
+4 0 a′ 
+
+> 3
+
+0 θ′
+
+> 4
+
+5 0 a′ 
+
+> 4
+
+0 0Table 8: DH Table for three DoF Middle Finger 
+
+i αi−1 ai−1 di θi
+
+1 π/2 0 0 π/2 2 π/2 a1 d2 θ2
+
+3 -π/2 0 0 θ3
+
+4 0 a3 0 θ4
+
+5 0 a4 0 08Figure 5: Initial posture of thumb and fingers for four cases 
+
+# 5.1 Forward kinematics and reachable area 
+
+To consider all reachable regions, forward kinematics must be performed. Let T ji denote the homogeneous transformation matrix from frame i to j (where j > i ). This matrix can be obtained through the following se-quence of transformations: 
+
+T ji = T i+1  
+
+> i
+
+T i+2  
+
+> i+1
+
+· · · T j−1 
+
+> j−2
+
+T jj−1. (12) First, the case with the largest number of DoF, Case 4 (Table 4), is considered. Each transformation matrix can be derived using the DH parameter tables in Tables 5 and 6. Table 5 represents the five DoF thumb, and Table 6represents the four DoF middle finger. For the other fin-gers except the middle finger, the representation can be obtained by modifying the offset ai−1 in column i = 2 of the DH table. Using the DH parameter convention, the joints of the fingers are represented as interconnected through a kinematic chain of links [39]. By multiplying each transformation matrix, the transformation from ini-tial to the end frame can be obtained. Cases 1, 2, and 3 indicated in Table 4 can be derived by modifying the DH tables in Tables 5, 6, 7, and 8. The actual values of the parameters are expressed as ratios using Tables 3 and 4, where the total hand length is normalized to 1. Based on this, the joint positions and end positions for each of the four kinematic structures can be represented with respect to the coordinate frame 
+
+Poxoyozo.The initial postures of the thumb and the other fingers for the four cases are shown in Fig. 5. The joint motion ranges are defined with respect to the initial posture. The motion ranges of the fingers are listed in Table 9, and those of the thumb are listed in Table 10. For the finger, the actuating range is set differently only for tip pinch in order to verify that the computation properly adapts to changes in the actuating range. For each case, the reachable area of the fingertip from the initial posture is shown in Fig. 6. Although the Table 9: Actuating ranges of fingers for four cases Case θ2 θ3 θ4 θ5
+
+1 -π/6 to π/6 -π/2 to 2 π/9 -π/2 to 0 -2 -π/6 to π/6 -π/2 to 2 π/9 -π/2 to 0 -π/2 to 0 3 -π/6 to π/6 -π/2 to 2 π/9 -π/2 to 0 -4 -π/6 to π/6 -π/2 to 2 π/9 -π/2 to 0 -π/2 to 0 Table 10: Actuating ranges of thumb for four cases Case θ′ 
+
+> 1
+
+θ′
+
+> 2
+
+, θ′ 
+
+> 4
+
+θ′ 
+
+> 3
+
+θ′
+
+> 6
+
+, θ′
+
+> 7
+
+1 0 to π/2 -π/2 to 0 -π/2 to 0 -2 0 to π/2 -π/2 to 0 -π/2 to 0 -3 0 to π/2 -π/2 to 0 -π/6 to π/6 -π/2 to 0 4 0 to π/2 -π/2 to 0 -π/6 to π/6 -π/2 to 0 
+
+Figure 6: Reachable areas for four cases with different kinematic structure overall hand size in the initial posture is identical for all cases, differences in the reachable areas occur depending on the kinematic structure. In particular, for the fingers, since an additional DoF is added to the F/E motion for the same link length, the reachable area becomes larger. In the case of the thumb, the reachable area differs be-cause the motion characteristics vary depending on the structural configuration. 
+
+# 5.2 Evaluation of distal phalanx align-ment 
+
+Aligned area was evaluated by setting the tolerance for the inner product and vector overlap as ϵ. This toler-ance is introduced because performing computations for 9Figure 7: Detection ratio of the distal phalanx aligned area within the reachable area (a) according to the reso-lution, (b) according to the ϵ
+
+all reachable points is computationally complex. In par-ticular, to compute the area where the other fingers ( Of ,
+
+f = i, m, r, l ) can reach with respect to the set of all points reachable by the thumb ( Ot), a total of Ot × Of point-wise operations are required. This area varies depending on the number of steps used to discretize the joint motion ranges. First, to examine the results according to the number of steps, ϵ = 1 × 10 −5 was used, and the joint angles were discretized into three resolution condition. Three reso-lution conditions were applied. For condition 1 (Res 1), the actuating range was divided into 9 intervals for 90 ◦,6 intervals for 60 ◦, and 11 intervals for 130 ◦. For condi-tion 2 (Res 2), the actuating range was divided into 18 intervals for 90 ◦, 12 intervals for 60 ◦, and 22 intervals for 130 ◦. For condition 3 (Res 3), the actuating range was divided into 30 intervals for 90 ◦, 20 intervals for 60 ◦, and 33 intervals for 130 ◦. The corresponding results are pre-sented in Fig. 7(a). Fig. 7(a) shows the results for Case 4, which requires the largest number of computations. Within the same kinematic structure, when the joint angles are discretized with larger intervals, the number of detection steps decreases, resulting in fewer postures that can be evaluated. Consequently, the number of points detected as the dexterity area also decreases. Fig. 7(a) shows, for each finger, the number of detected points rel-ative to the total number of evaluated points under the three resolution conditions. As the interval is reduced and the detection becomes denser, the proportion of detected points within the reachable area increases for all fingers. This is due to the increased computational cost, which increases depending 
+
+Figure 8: Distal phalanx alignment detection results for each case with ϵ = 1 × 10 −5, Res 3 on the number of finger DoF and the interval used for the joint angle discretization. When the interval is too large, it becomes difficult to obtain appropriate results. Next, it is necessary to determine an appropriate value of ϵ. When the resolution is increased and more points are detected, regions can still be detected even with smaller values of ϵ. However, since the detection is not performed for the entire continuous area, there is a high possibility that some areas may not be detected depending on the resolution scale. Figure 7(b) shows the detected areas obtained with Res 3 while varying the value of ϵ as 1 × 10 −3, 1 × 10 −4,and 1 × 10 −5. Compared to the same evaluated area, the detected area decreases as the value of ϵ approaches zero. For the thumb, the detected area relative to the total area decreases from 17.43% to 12.01% and 4.95%. The four fingers show the same tendency, and the average detection ratios of the four fingers decrease from 66.28% to 54.61% and 25.68%. Next, under the same interval and ϵ, the detection re-sults for each case are shown in Fig. 8. The number of evaluated points in the inspection area for each finger according to the interval for each case is presented in Ta-ble 9, and the number of detected points according to the value of ϵ is presented in Table 10. The number of points in the inspection area tends to increase as the number of DoF increases, since a larger number of configurations must be examined. An important point is observed when comparing Case 1 with Case 3 and Case 2 with Case 4. In each pair, the thumb configuration is identical, while the DoF of the fingers differ. In this case, when the fingers have three degrees of freedom, increasing the thumb’s degrees of freedom does not significantly improve the detection 10 Table 11: Number of evaluated points in the inspection region of each finger for each case ( ϵ = 1 × 10 −5, Res 3) Case Thumb Index to Little 1 810,000 19,800 2 16,200,000 19,800 3 810,000 594,000 4 16,200,000 594,000 Table 12: Number of detected points in the inspection region of each finger for each case ( ϵ = 1 × 10 −5, Res 3) Case Thumb Index Middle Ring Little 1 38,708 4,698 4,745 4,711 4,615 2 115,644 3,638 3,761 3,928 4,031 3 38,797 67,367 70,104 73,556 76,568 4 159,525 41,249 44,811 49,363 53,025 ratio. In contrast, when the fingers have four degrees of freedom, the detection ratio increases substantially as the thumb’s degrees of freedom increase. This is because the finger configurations are almost identical, except that one additional DoF is added in the F/E motion. When comparing Case 1 with Case 2 and Case 3 with Case 4, the finger DoF are identical in each pair, while the thumb DoF differ. In this case, not only the number of DoF but also the implemented motions are different. To generate the thumb motion of Case 3 using the config-urations of Case 4, the angle θ′ 
+
+> 4
+
+must be π/ 2 at the initial posture. However, the current motion range of this joint is limited to −π/ 6 to π/ 6, and therefore Cases 3 and 4 exhibit different motion ranges. If Case 4 had a motion range that included the motion of Case 3, it would pro-duce results over a wider range. Next, the case without thumb involvement is briefly examined. Similarly, ϵ = 1 × 10 −5, Res 3,and the same detection algorithm is used, but the index finger is used as the reference instead of the thumb to detect the other fingers. Table 13: Number of detected points in the inspection region of each finger for each case without thumb ( ϵ =1 × 10 −5, Res 3) Case Index Middle Ring Little 1,2 19,800 19,800 19,800 19,115 3,4 594,000 594,000 572,461 526,435 Table 13 shows the numbers of detected points while evaluated points are same with Table 11. First, the index finger and the middle finger are detected in both cases. This is because the two fingers have identical DoF con-figurations and are positioned with a narrow installation spacing. For the ring finger, the results are identical for the three DoF finger, while the detected area decreases only in the four DoF configuration. In the case of the little finger, the detected area decreases in both cases. In both configurations, the length of the distal phalanx in the four DoF case is shorter than that in the three DoF case. As a result, when the fingers face each other due to the A/A motion, there are more cases where the seg-ments do not overlap. In contrast, in the three DoF case, since the distal segment is longer than that of the four DoF case, fewer configurations deviate due to the A/A motion. 
+
+# 5.3 Evaluation of lateral pinch 
+
+For the lateral pinch evaluation, the resolution condition was set to Res 1 and ϵ = 1 ×10 −5, considering the increase in computational cost caused by the detection according to the span between pinch postures and the distinction of contact points. The joints corresponding to the contact between the index finger and the thumb were divided into ten segments, resulting in eleven contact points. The dis-tance was detected in eleven steps from 0 to 1.0 with an interval of 0.1 based on the total hand length. Figure 9 shows the detection results of lateral pinch for case 1. From the graphs obtained for each distance, it can be seen that the degree of detection varies depend-ing on the distance. In particular, the highest number of detections occurred when the distance between the index finger and thumb fingertips, dspan , was between 0.5 and 0.7, and some postures corresponding to distances greater than 1, which approximately corresponds to the hand length, were also detected. However, when dspan = 0, no corresponding points were obtained due to the small ϵ
+
+and detection interval. The postures reachable by the thumb include all corre-sponding configurations with respect to the index finger. The number of detected points for the three DoF finger is 594, while that for the 4 DoF finger is 5,346. The number of detected points for the four DoF thumb is 6,561, and that for the five DoF thumb is 39,366. The number of detected points relative to the evaluated points for each case is presented in Table 14. Table 14: Lateral pinch detection results – detected points relative to the evaluated points Case Thumb (%) Index (%) 1 44.25 35.77 2 73.87 32.26 3 79.45 36.14 4 88.57 36.24 According to the results, when the same thumb is used, the region where lateral pinch is possible in the thumb becomes larger when the finger has four DoF. However, when the same finger configuration is used, the detection ratio of the four DoF thumb is higher than that of the five 11 Figure 9: Lateral pinch detection results for Case 1 with 
+
+ϵ = 1 × 10 −5, Res 1 DoF thumb. This is because, unlike the fingers where the difference occurs in the number of DoF corresponding to the F/E motion, the thumb has structural differences. Therefore, in the case of the thumb, a higher number of DoF does not necessarily produce higher detection re-sults without considering the structural configuration. In addition, since the distance between contact points for the detection region was defined based on the total hand length, this ratio is suitable for identifying the general tendency. However, to obtain an accurate detection ratio, the computation can be performed by setting the maxi-mum stroke between the index finger and the thumb that can occur in a posture as the maximum calculation range. 
+
+# 5.4 Evaluation of tip pinch 
+
+For the tip pinch analysis, the resolution condition was set to Res 1 due to the increased computational cost caused by the distinction between detection and contact points and the number of pinch posture combinations. The ϵ
+
+was set to 1 × 10 −5. The distance between the thumb tip and the tips of the four fingers was evaluated in 13 steps 
+
+Figure 10: Tip pinch detection results for Case 1 with 
+
+ϵ = 1 × 10 −5, Res 1. from 0 to 1.2 with an interval of 0.1, normalized by the total hand length. Figure 10 shows the detection results of tip pinch for case 1. The results are presented by distinguishing be-tween the four fingers and the thumb, while the displayed outcomes do not differentiate based on the distances be-tween the fingertips. The detected points for each finger vary, and excluding duplicates, the total number of de-tected points is lowest for the index finger, followed by the middle, ring, and little fingers in increasing order. These results allow verification of cases in which a candidate set that can be generally observed is obtainable. The reachable postures of the thumb include the infor-mation of all fingers from the index finger to the little finger. The number of evaluated points is 594 for a three DOF finger and 5,346 for a four DOF finger. For the 12 Figure 11: Tip pinch detection results for four cases with ϵ = 1 × 10 −5, Res 1 thumb, the number of evaluated points is 6,561 for the four DOF thumb and 39,366 for the five DOF thumb. The ratio of detected points to evaluated points for each case is summarized in Table 15. According to the results, when the fingers have the same number of DoF, the five DOF thumb shows a larger detectable region for tip pinch. In addition, when the fingers have four DOF, a larger region capable of performing tip pinch is detected with the thumb. Table 15: Tip pinch detection results – detected points relative to the evaluated points Case Thumb Index Middle Ring Little (%) (%) (%) (%) (%) 1 26.66 42.09 53.37 55.56 57.74 2 28.83 80.30 81.82 81.82 81.82 3 93.77 44.11 55.31 58.21 56.34 4 95.24 81.11 81.72 81.71 81.69 For the lateral case, results are presented by distance, but no further distinction was made due to two-finger in-teraction. For the tip pinch, however, interactions with each finger were evaluated separately, revealing differ-ences depending on the finger combination. When dis-tinguished by finger relationship for each distance, the results are shown in Fig. 11, displaying four different cases. The results indicate the detection ratio per dis-tance based on the reachable area for each interval. Co-ordinates detected at each distance sometimes occurred multiple times. In all cases, tip pinch at shorter distances had higher usable ratios for fingers closer to the thumb, whereas at longer distances, fingers farther from the thumb had higher usable ratios. Additionally, the usable ratio for fin-gers was higher in the four DoF cases (Case 2 and 4) than in the three DoF cases (Case 1 and 3). For the thumb, the usable ratio was higher for five DoF cases (Case 2 and 4) at short distances to other fingers, while at longer distances, the four DoF cases (Case 1 and 3) were more frequently used. This is because the thumb has a differ-ent DoF configuration compared to the other fingers and the usable range of A/A motions for five DoF fingers is limited. Since the distance between contact points used for de-tection was normalized by the total hand length, this ratio 13 is appropriate for identifying overall trends. However, to obtain an exact detection ratio, the stroke between the thumb and each finger that can occur in a given posture should be set to its maximum range, and the computation should be performed individually. When the pinch configurations evaluated using the three assessment methods are categorized into pulp pinch, three-jaw chuck pinch, no-thumb pinch, tip pinch, and lateral pinch, representative postures for each type are il-lustrated in Figure 12. The example postures are based on Case 4. Specifically, Figure 12(a) shows the pulp pinch, (b) the three-jaw chuck pinch, (c) the no-thumb pinch, (d) the tip pinch, and (e) the lateral pinch. For the pulp pinch cases shown in Figure 12(a), (b), and (c), no distance-based classification is applied. In contrast, for the tip pinch in Figure 12(d), the configurations are extracted by considering the distance between the thumb and each finger. The example distances are set to 0.2 for the index finger, 0.4 for the middle finger, 0.6 for the ring finger, and 0.8 for the little finger. For the lateral pinch shown in Figure 12(e), the phalangeal segments of the in-dex finger corresponding to the thumb are indicated, and the representative distances are set to 0.1, 0.2, and 0.3 from left to right. 
+
+# 5.5 Results 
+
+The results are briefly summarized for each pinch eval-uation method as follows. Tip pinch configurations are highly sensitive to the alignment between the thumb and the fingertip. Since the contact region is limited to the fingertip area, even small deviations in distal phalanx ori-entation can prevent stable pinch interaction. This in-dicates that robotic hands performing tip pinch require precise fingertip positioning and orientation control. In contrast, pulp pinch configurations allow a larger contact area between the thumb and finger pads. As a result, pulp pinch is less sensitive to small variations in distal phalanx alignment and enables stable pinch interactions under a wider range of finger configurations. Unlike tip and pulp pinch, lateral pinch involves contact between the thumb pad and the lateral surface of the finger. Therefore, the orientation of the finger side plays an important role in enabling stable pinch interactions. Based on the kinematic structures determined by the DoF configurations of the hand, the pinch capabilities of the five-fingered hand were evaluated for four different cases. The evaluation results for the pinch types did not exhibit the same tendency across the four cases, and dif-ferent results were obtained depending on the case. In de-tail, a configuration with a larger number of DoF can in-clude the motions of a configuration with fewer DoF, and therefore it has the potential to produce a larger detected region. However, when the motion ranges differ, it cannot be guaranteed that a kinematic structure with more DoF will always have a larger detected region. Although the expansion of the workspace through an increase in DoF within the same specifications is an important factor, the region in which pinch operations can be performed may vary depending on the kinematic structure. Therefore, by using the evaluation method, the feasible regions for pinch operations of various kinematic structures can be examined in advance during the design stage. The proposed evaluation framework enables systematic analysis of whether a given robotic hand kinematic struc-ture can realize different pinch configurations. By identi-fying feasible and infeasible configurations, the evaluation results provide useful feedback during the design process of robotic hands. In particular, the framework allows de-signers to examine how variations in kinematic structure influence the feasibility of tip, pulp, and lateral pinch in-teractions. This capability makes it possible to analyze and compare different hand structures during the design stage before physical implementation. 
+
+# 6 Discussions 
+
+In this study, a method was proposed to evaluate the fea-sibility of various pinch configurations according to the kinematic structure of a robotic hand. Previous studies have classified human pinch types from a functional per-spective; however, systematic evaluation methods for de-termining whether such pinch configurations can be real-ized in robotic hands have not been sufficiently addressed. In this work, pinch configurations were evaluated based on three methods, and the results were analyzed accord-ing to the kinematic structure of the robotic hand. The evaluation results show that tip pinch, pulp pinch, and lateral pinch require different geometric conditions. Furthermore, even in robotic hands with the same five-finger structure, the feasible regions for performing pinch configurations vary depending on differences in the kine-matic structure arising from the DoF. In particular, it was observed that increasing the number of DoF does not nec-essarily result in a larger feasible region for pinch execu-tion. This indicates that simply increasing the number of DoF does not guarantee diverse pinch interactions. These results suggest that, in robotic hand design, not only the number of DoF but also the arrangement of joints and the configuration of the kinematic structure significantly affect pinch configurations. Therefore, the evaluation method can be used as a tool to examine, during the design process of a robotic hand, whether a specific kinematic structure is capable of per-forming various pinch interactions. It is useful for identi-fying which pinch configurations are structurally limited when conceptualizing and comparing different kinematic structures. Since the feasibility of pinch execution for various structures can be compared and analyzed prior to hardware implementation, the proposed approach is expected to serve as an evaluation framework that sup-ports the decision-making process for determining the kinematic structure during the robotic hand design stage. 14 Figure 12: Example postures for different pinch types: (a) pulp pinch in Case 4, (b) three-jaw chuck pinch in Case 4, (c) no-thumb pinch in Cases 3 and 4, (d) tip pinch in Case 4, and (e) lateral pinch in Case 4 However, this study evaluated the feasibility of pinch configurations based on kinematic analysis, particularly focusing on a method intended for review during the de-sign stage without considering specific objects or tasks. Therefore, factors that arise during real object manipu-lation—such as friction, compliance, and object geome-try—should be appropriately considered in practical ma-nipulation environments. In addition, since the evalua-tion was conducted based on the kinematic structure, de-sign factors such as finger thickness and width were not reflected, which constitutes a limitation of this study. In future work, unlike the current approach that focuses on the design stage, we plan to consider evaluation methods that incorporate these design factors after the design has been completed. Furthermore, by reflecting the design of an actually implemented robotic hand, we aim to con-struct a set of candidate pinch tasks and derive feasible motion candidates that are reachable from the current state. 
+
+# 7 Conclusions 
+
+An evaluation method was proposed to systematically analyze pinch configurations according to the kinematic structure of robotic hands. Pinch configurations were defined and evaluated based on the forms of tip pinch, pulp pinch, and lateral pinch observed in the human hand. Using the proposed method, pinch configurations were analyzed for five-finger robotic hands with different DoF configurations. The results show that the geometric conditions required for each pinch type differ, and that the range of feasible pinch configurations may vary even within the same hand structure. The analysis further in-dicates that not only the number of DoF but also the con-figuration of the kinematic structure plays a significant role in determining the feasibility of pinch configurations. This finding suggests that, in robotic hand design, simply increasing the number of DoF is not sufficient; the way in which the kinematic structure is configured also criti-cally influences the ability to realize diverse pinch inter-actions. Such an approach enables the comparison and examination of candidate kinematic structures prior to actual hardware implementation and is expected to be applicable to a wide range of future robotic hand design studies. 
+
+# References 
+
+[1] S. R. Kashef, S. Amini, and A. Akbarzadeh, “Robotic hand: A review on linkage-driven finger mechanisms of prosthetic hands and evaluation of the performance criteria,” Mechanism and Machine Theory , vol. 145, p. 103677, 2020. [Online]. Available: https://www.sciencedirect.com/science/ article/pii/S0094114X19322839 [2] R. A. Mohammed, W. A. Soud, and I. A. Baqer, “Kinematic analysis of underactuated robotic finger design,” IOP Conference Series: Materials Science and Engineering , vol. 1094, no. 1, p. 012070, feb 2021. [3] X. Tang, C. Luo, K. He, and R. Du, “Digital design of low-cost 3-dof prosthetic hand,” in 2011 IEEE In-ternational Conference on Information and Automa-tion , 2011, pp. 309–314. [4] H. Kang, D. Han, K. Son, and M.-S. Kang, “De-sign and kinematic analysis of a 6-doa airo-hand with 15 a translation–rotation-coupled thumb for workspace expansion,” International Journal of Control, Au-tomation, and Systems , pp. 1–14, 2026. [5] Q. Yu, W. Shang, Z. Zhao, S. Cong, and Z. Li, “Robotic grasping of unknown objects using novel multilevel convolutional neural networks: From par-allel gripper to dexterous hand,” IEEE Transactions on Automation Science and Engineering , vol. 18, no. 4, pp. 1730–1741, 2020. [6] H. Zhu, X. Li, W. Chen, X. Li, J. Ma, C. S. Teo, T. J. Teo, and W. Lin, “Weight imprinting classification-based force grasping with a variable-stiffness robotic gripper,” IEEE Transactions on Automation Science and Engineering , vol. 19, no. 2, pp. 969–981, 2021. [7] M. Cheng, S. Fan, D. Yang, and L. Jiang, “Design of an underactuated finger based on a novel nine-bar mechanism,” Journal of Mechanisms and Robotics ,vol. 12, no. 6, p. 065001, 2020. [8] H. Kang, D. Han, K. Son, and M.-S. Kang, “Design of a reconfigurable three-finger gripper for versatile grasping tasks,” Robotics and Autonomous Systems ,vol. 196, p. 105264, 2026. [9] C. Meijneke, G. Kragten, and M. Wisse, “Design and performance assessment of an underactuated hand for industrial applications,” Mechanical Sci-ences , vol. 2, no. 1, pp. 9–15, 2011. [10] Y.-Y. Lin, R. Raj, and J.-Y. Juang, “A compre-hensive review of dexterous robotic hands: Design, implementation, and evaluation,” Bioinspiration & Biomimetics , vol. 20, no. 4, p. 041003, 2025. [11] D. Mei, X. Yu, G. Tang, S. Liu, X. Zhao, C. Zhao, C. Li, and Y. Wang, “Blue hand: A novel type of soft anthropomorphic hand based on pneumatic series-parallel mechanism,” IEEE Robotics and Automa-tion Letters , vol. 8, no. 11, pp. 7615–7622, 2023. [12] W. Wei, Z. Zhuang, W. An, and J. Dai, “A three-fingered humanoid dexterous hand based on a six-bar metamorphic palm structural design and per-formance research,” in 2021 6th International Con-ference on Robotics and Automation Engineering (ICRAE) . IEEE, 2021, pp. 168–179. [13] A. I. Kapandji, “Clinical evaluation of the thumb’s opposition,” Journal of Hand Therapy , vol. 5, no. 2, pp. 102–106, 1992. [14] B.-Y. Sun, X. Gong, J. Liang, W.-B. Chen, Z.-L. Xie, C. Liu, and C.-H. Xiong, “Design principle of a dual-actuated robotic hand with anthropomorphic self-adaptive grasping and dexterous manipulation abilities,” IEEE Transactions on Robotics , vol. 38, no. 4, pp. 2322–2340, 2021. [15] Ih2 azzurra. Prensilia S.r.l. [Online]. Available: https://www.prensilia.com/ih2-azzurra-hand/ [16] U. Kim, D. Jung, H. Jeong, J. Park, H.-M. Jung, J. Cheong, H. R. Choi, H. Do, and C. Park, “Integrated linkage-driven dexterous anthropomor-phic robotic hand,” Nature communications , vol. 12, no. 1, p. 7177, 2021. [17] H. Park and D. Kim, “An open-source anthropo-morphic robot hand system: Hri hand,” HardwareX ,vol. 7, p. e00100, 2020. [18] M. Hernando, C. Morillo, D. Guffanti, and A. Brunete, “Mechatronic design of a self-contained dexterous robotic hand for gestural communication,” 
+
+International Journal of Social Robotics , vol. 15, no. 2, pp. 221–231, 2023. [19] Handroid. ITK co.ltd. [Online]. Available: https: //itk-pro.com/handroid/ [20] Orca hand v1. ORCA Dexterity, Inc. [Online]. Available: https://www.orcahand.com/paper [21] H. Yang, G. Wei, L. Ren, Z. Qian, K. Wang, H. Xiu, and W. Liang, “A low-cost linkage-spring-tendon-integrated compliant anthropomorphic robotic hand: Mcr-hand iii,” Mechanism and Machine Theory , vol. 158, p. 104210, 2021. [22] Hx5-d20. ROBOTIS Co. Ltd. [Online]. Avail-able: https://www.robotis.com/shop/item.php? it id=905-0058-000 [23] T. Mouri, H. Kawasaki, K. Yoshikawa, J. Takai, S. Ito et al. , “Anthropomorphic robot hand: Gifu hand iii,” in Proc. Int. Conf. ICCAS , 2002, pp. 1288– 1293. [24] Z. Wan, Z. Bi, Z. Zhou, H. Ren, Y. Zeng, Y. Li, L. Qi, X. Yang, M.-H. Yang, and H. Cheng, “Rapid hand: A robust, affordable, perception-integrated, dexterous manipulation platform for generalist robot autonomy,” arXiv preprint arXiv:2506.07490 , 2025. [25] Wave. Sharpa Pte. Ltd. [Online]. Available: https: //www.sharpa.com/pages/wave [26] Shadow. Shadow Robot co. [Online]. Available: https://shadowrobot.com/dexterous-hand-series/ [27] Mm hand 1.0. MMLab. [Online]. Available: https: //mmlab.hk/research/MM-Hand [28] P. K. Ng, M. C. Bee, A. Saptari, and N. A. Mo-hamad, “A review of different pinch techniques,” 
+
+Theoretical Issues in Ergonomics Science , vol. 15, no. 5, pp. 517–533, 2014. 16 [29] N. Smaby, E. Johanson, B. Baker, D. E. Kenney, W. M. Murray, and V. R. Hentz, “Identification of key pinch forces required to complete functional tasks,” Journal of Rehabilitation Research & Devel-opment , vol. 41, no. 2, 2004. [30] P. G. Dempsey and M. Ayoub, “The influence of gender, grasp type, pinch width and wrist position on sustained pinch strength,” International Journal of Industrial Ergonomics , vol. 17, no. 3, pp. 259–273, 1996. [31] S. Kumar, Biomechanics in ergonomics . CRC Press, 1999. [32] R. A. Berger and A.-P. C. Weiss, Hand surgery . Lip-pincott Williams & Wilkins, 2004, vol. 1. [33] D. J. Magee and R. C. Manske, Orthopedic physical assessment . Elsevier health sciences, 2020. [34] I. Akinola, J. Varley, B. Chen, and P. K. Allen, “Workspace aware online grasp planning,” in 2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , 2018, pp. 2917–2924. [35] B. S. Homberg, R. K. Katzschmann, M. R. Dogar, and D. Rus, “Robust proprioceptive grasping with a soft robot hand,” Autonomous robots , vol. 43, no. 3, pp. 681–696, 2019. [36] L. Jiang, Y. Liu, D. Yang, and H. Liu, “A synthetic framework for evaluating and designing an anthro-pomorphic prosthetic hand,” Journal of Bionic En-gineering , vol. 15, no. 1, pp. 69–82, 2018. [37] G. Salvietti, G. Gioioso, M. Malvezzi, D. Prat-tichizzo, A. Serio, E. Farnioli, M. Gabiccini, A. Bic-chi, I. Sarakoglou, N. Tsagarakis et al. , “Hands. dvi: A device-independent programming and con-trol framework for robotic hands,” in Gearing up and accelerating cross-fertilization between academic and industrial robotics research in Europe: Technol-ogy transfer experiments from the ECHORD project .Springer, 2014, pp. 197–215. [38] A. M. Clerke, J. P. Clerke, and R. D. Adams, “Effects of hand shape on maximal isometric grip strength and its reliability in teenagers,” Journal of hand ther-apy , vol. 18, no. 1, pp. 19–29, 2005. [39] L. Liu, N. Sun, and K. Li, “System design and kine-matic analysis of a dexterous hand with humanoid characteristics,” in 2024 WRC Symposium on Ad-vanced Robotics and Automation (WRC SARA) ,2024, pp. 163–169. 17

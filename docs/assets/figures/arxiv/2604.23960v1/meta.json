@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.23960v1/fig-001.webp",
+      "caption": "Fig. 3: This table reports the percentage of validation effort performed before early termination out of the total number of CCs available for a set of 1000 randomly generated multi-robot motions in the CAGE scenario shown in Fig. 2. Four MOTVAL strategies are included with choices of combined or hierarchical robot-obstacle and robot-robot validation and linear or rake packing strategies for configuration batches. Each cell reports the percentage of validation effort performed before termination (lower is better) and the relative speedup to both FCL and the sphere-based baselines (higher is better). The values for tests with and without obstacles are split left and right. The bottom column labels indicate the number of robots. Note that the number of invalid motions increased with both robots and the presence of obstacles. For either 16 robot case, all 1000 randomly sampled motion were invalid.",
+      "page": 6,
+      "index": 1,
+      "width": 948,
+      "height": 195
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23960v1/fig-002.webp",
+      "caption": "Fig. 4: Per algorithm speedups using the SIMD primitives vs baseline FCL or sphere-based CC implementations. Speedup color range is in log scale. Scenarios where one or both methods failed to solve any trials are left empty. † denotes sparse estimates (trials pairs < 10).",
+      "page": 7,
+      "index": 2,
+      "width": 1046,
+      "height": 235
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23960v1/fig-003.webp",
+      "caption": "Fig. 5: Cumulative distribution of planning times for all three scenarios. Each algorithm is run with three validation strategies: multi-robot adaptation of VAMP, FCL, and the sphere-based representation (indicated by different line types). (a,b) The CAGE scenario with 5 random tasks with 10 trials each. (c-f) The CROSS scenario with 30 trials. (g,h) The HETEROGENEOUS scenario with 10 trials.",
+      "page": 7,
+      "index": 3,
+      "width": 1054,
+      "height": 763
+    }
+  ]
+}

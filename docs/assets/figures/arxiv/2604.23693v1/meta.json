@@ -1,0 +1,150 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-001.webp",
+      "caption": "Fig. 8. Robots in simulation and the real world. (a)(b) The articulated tracked robot in simulation and the real world. (c)(d) The wheeled robot in simulation.",
+      "page": 11,
+      "index": 1,
+      "width": 385,
+      "height": 356
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-002.webp",
+      "caption": "Fig. 12. Metric results of the four approaches in the simulated multi-building scene. (a) Completeness versus time. (b) Single-round planning time. (c) History-trajectory length. (d) Accumulated completeness.",
+      "page": 15,
+      "index": 2,
+      "width": 547,
+      "height": 378
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-003.webp",
+      "caption": "Fig. 13. Top view of reconstructed maps and exploration trajectories of four approaches (a)-(d) in the simulated multi-building scene.",
+      "page": 15,
+      "index": 3,
+      "width": 516,
+      "height": 491
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-004.webp",
+      "caption": "Fig. 11. Top view of reconstructed maps and exploration trajectories of the four approaches (a)-(d) in the simulated single-building scene.",
+      "page": 15,
+      "index": 4,
+      "width": 450,
+      "height": 481
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-005.webp",
+      "caption": "Fig. 10. Metric results of the four approaches in the simulated single building scene. (a) Completeness versus time. (b) Single-round planning time. (c) History-trajectory length. (d) Accumulated completeness.",
+      "page": 15,
+      "index": 5,
+      "width": 524,
+      "height": 364
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-006.webp",
+      "caption": "Fig. 9. Simulated collapsed building scenes and their ground-truth point clouds. The first row demonstrates the simulated scenes. The second row shows the ground-truth point clouds colored by height to highlight building surfaces, while the third row depicts the ground-truth point clouds colored by truncated height to emphasize uneven terrain.",
+      "page": 14,
+      "index": 6,
+      "width": 514,
+      "height": 601
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-007.webp",
+      "caption": "Fig. 15. Metric results of the ablated approaches in the simulated multibuilding scene. (a) Completeness versus time. (b) Single-round planning time. (c) History-trajectory length. (d) Accumulated completeness.",
+      "page": 18,
+      "index": 7,
+      "width": 539,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-008.webp",
+      "caption": "Fig. 18. The real-world scene and reconstructed maps in different regions. (a) One of the two building entrances near indoor staircases. (b) An indoor corridor near a staircase. (c)(d) The maps corresponding to (a) and (b).",
+      "page": 18,
+      "index": 8,
+      "width": 516,
+      "height": 352
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-009.webp",
+      "caption": "Fig. 16. Top view of reconstructed maps and exploration trajectories of the ablated variants (a)-(d) in the simulated multi-building scene.",
+      "page": 18,
+      "index": 9,
+      "width": 504,
+      "height": 483
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-010.webp",
+      "caption": "Fig. 17. The real-world scene and its ground truth point cloud. (a) Overview of the field scene. (b) The ground-truth point cloud of the scene. (c) The layout of outdoor regions and robot-start positions.",
+      "page": 18,
+      "index": 10,
+      "width": 516,
+      "height": 351
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-011.webp",
+      "caption": "TABLE III PRINCIPLES OF THE COMPARATIVE APPROACHES AND THEIR HETEROGENEOUS ADAPTATIONS",
+      "page": 13,
+      "index": 11,
+      "width": 1056,
+      "height": 569
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-012.webp",
+      "caption": "Fig. 1. The proposed decentralized heterogeneous multi-robot collaborative exploration framework for indoor/outdoor/mixed 3D environments. The framework primarily comprises basic perception mapping, high-level abstraction and fusion, collaborative exploration planning, and safety management. Dashed arrows represent the information shared among robots.",
+      "page": 4,
+      "index": 12,
+      "width": 1072,
+      "height": 502
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-013.webp",
+      "caption": "Fig. 19. Results of exploration metrics in the real-world scene. (a) Completeness versus time. (b) Single-round planning time of each robot.",
+      "page": 19,
+      "index": 13,
+      "width": 506,
+      "height": 267
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-014.webp",
+      "caption": "Fig. 20. Two bird-eye views (a) and (b) of reconstructed map and exploration trajectories in the real-world scene.",
+      "page": 19,
+      "index": 14,
+      "width": 504,
+      "height": 256
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-015.webp",
+      "caption": "TABLE II PARAMETERS OF THE PROPOSED APPROACH",
+      "page": 12,
+      "index": 15,
+      "width": 782,
+      "height": 473
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-016.webp",
+      "caption": "Fig. 6. Stochastic individual generation of multi-chromosome and mutation operations. (a) Randomly separate the public task clusters into private task clusters. (b) Generate individuals randomly from the private task clusters. (c) Regenerate the private task clusters from the individuals in (b), followed by swap and sliding operations. (d) New individuals corresponding to the mutated private task clusters in (c).",
+      "page": 9,
+      "index": 16,
+      "width": 524,
+      "height": 411
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-017.webp",
+      "caption": "Fig. 3. Voxel segmentation results in two scenes. (a) Supervoxel segmentation of the inner and outer surfaces of the wall. (b) Uniform spatial division or Euclidean clustering of the inner and outer surfaces of the wall. (c) Supervoxel segmentation of the floor and ceiling. (d) Uniform spatial division or Euclidean clustering of the floor and ceiling.",
+      "page": 5,
+      "index": 17,
+      "width": 524,
+      "height": 423
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23693v1/fig-018.webp",
+      "caption": "Fig. 14. Computation runtime of each component of the proposed approach in the simulated multi-building scene.",
+      "page": 16,
+      "index": 18,
+      "width": 516,
+      "height": 342
+    }
+  ]
+}

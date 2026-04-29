@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.19670v1/fig-001.webp",
+      "caption": "Fig. 1. A visualization of the RAPIDDS loop (grey). As the human and robot perform tasks repeatedly, RAPIDDS updates individualized behavior models (green) and jointly adapts schedules (yellow) and motions (blue).",
+      "page": 1,
+      "index": 1,
+      "width": 514,
+      "height": 474
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19670v1/fig-002.webp",
+      "caption": "Fig. 4. Plan cost over 16 cycles of the fetch task (See Section III-B) across differing adaptation levels: space+time (orange), space (blue dashed), time (red dot-dash), and none (black dotted). We test four human archetypes, left to right: Fast Outside, Slow Middle, Fast Middle, Slow Outside",
+      "page": 6,
+      "index": 2,
+      "width": 1040,
+      "height": 220
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19670v1/fig-003.webp",
+      "caption": "Fig. 5. Brush task and robot behavior with RAPIDDS: A) The brush task setting, B) Spatial cost function without adaptation and resulting interference between the human and robot, C) Spatial cost function adapted to left handed user. The Unconstrained variant results in switching the order of Mix L and Mix R to avoid the user. D) Spatial cost function adapted to left handed user. The Constrained variant results in less efficient but more avoidant motions.",
+      "page": 6,
+      "index": 3,
+      "width": 510,
+      "height": 316
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19670v1/fig-004.webp",
+      "caption": "Fig. 6. User study plan costs with and without adaptation. We separate the effect of spatial adaptation and cost (left) from temporal adaptation and cost (right). Individuals’ costs are shown, marked with differences in participant training for speed (magenta vs. green) and donimant hand (“x” vs. dot).",
+      "page": 7,
+      "index": 4,
+      "width": 496,
+      "height": 244
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19670v1/fig-005.webp",
+      "caption": "Fig. 3. Adaptation of spatial cost si(x) over multiple observations of two human strategies for task τ2: “middle” (top) and “outside” (bottom).",
+      "page": 4,
+      "index": 5,
+      "width": 1044,
+      "height": 331
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.19374v1/fig-001.webp",
+      "caption": "Table 1: An overview of existing HRI WoZ systems and their properties necessary for fluidity. Keys for the different interaction types: C = Controller, M = Mouse, K = Keyboard, P = Pen & Paper, H = Haptic/Touch, G = Gesture, T = Tablet Wizarding, S = Speech X = evidenced, ? = Mentioned category but not clearly discussed, - = Not Mentioned",
+      "page": 2,
+      "index": 1,
+      "width": 1032,
+      "height": 254
+    },
+    {
+      "url": "assets/figures/arxiv/2604.19374v1/fig-002.webp",
+      "caption": "Figure 1: A diagram showing the system architecture of the proposed VR-HRI system. Hardware interfaces are blue boxes, processors are yellow, and data types are green.",
+      "page": 4,
+      "index": 2,
+      "width": 1056,
+      "height": 556
+    }
+  ]
+}

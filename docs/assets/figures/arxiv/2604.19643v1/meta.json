@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.19643v1/fig-001.webp",
+      "caption": "Figure 2: System architecture and data flow of the proposed gesture-based human–swarm interaction, showing gesture capture, server-side visual processing, motion-tracking feedback, and command transmission to the AcoustoBots.",
+      "page": 3,
+      "index": 1,
+      "width": 476,
+      "height": 282
+    }
+  ]
+}

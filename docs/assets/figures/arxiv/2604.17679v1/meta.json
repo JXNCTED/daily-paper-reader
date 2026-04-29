@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-001.webp",
+      "caption": "Fig. 2: Heuristic comparisons for the robot at two orientations: map-based TTR, general TTR, map-based Dist, and general Dist heuristic. The hierarchy of values follows two rules: heuristics considering dynamics (TTR) are greater than those that do not (Dist), and map-based ones are greater than their general counterparts.",
+      "page": 6,
+      "index": 1,
+      "width": 516,
+      "height": 359
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-002.webp",
+      "caption": "Fig. 11: Layout of the dynamic environment. Dotted lines represent the reference trajectories for the robot connecting the goals (P6-P8). Note that humans navigate among the orange crosses, creating dynamic interference for the robot.",
+      "page": 15,
+      "index": 2,
+      "width": 516,
+      "height": 321
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-003.webp",
+      "caption": "Fig. 10: Comparison of the OBS and BRT pruners across consecutive timesteps (from t1 to t6) in the Dense Room scenario. Top row (OBS Pruner): Highlighted in the red box, the robot failed to prune dangerous nodes in time, causing it to plan too close to the obstacle and stall without finding a feasible trajectory within the time limit, as indicated by the red arrows (robot heading). Bottom row (Ours): Highlighted in the green box, our BRT pruner effectively identifies and eliminates dangerous nodes early, allowing the robot to successfully circumvent the obstacle shown by the green arrows.",
+      "page": 15,
+      "index": 3,
+      "width": 1045,
+      "height": 378
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-004.webp",
+      "caption": "Fig. 1: Overview of the proposed HJ reachability-guided search framework. In the offline stage, value functions representing a general TTR, a static-map BRT, and a humanrobot BRT are computed. Online, these value functions are integrated into the graph search algorithm to improve search efficiency and guarantee safety.",
+      "page": 2,
+      "index": 4,
+      "width": 515,
+      "height": 677
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-005.webp",
+      "caption": "Fig. 3: Visualization of one Bmap. (Left) The 3D value function for a fixed heading angle θrob = 1.57 rad. (Right) A 2D slice of the Bmap at vrob = 0.75m/s, θrob = 1.57 rad corresponding to the plane indicated in the left plot.",
+      "page": 7,
+      "index": 5,
+      "width": 516,
+      "height": 279
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-006.webp",
+      "caption": "Fig. 6: Left: ANA* w/ Dist created a trajectory requiring continuous backward movement (The heading angles represented by arrows are always pointing downwards). Right: ANA* w/ TTR generated a more reasonable trajectory where the robot reversed briefly and reoriented toward the goal.",
+      "page": 10,
+      "index": 6,
+      "width": 516,
+      "height": 315
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-007.webp",
+      "caption": "Fig. 9: Layout of the two static environments: Long Hallway (left) and Dense Room (right). Dotted lines represent the reference trajectories connecting the goals (P1-P5). Note that the aisles marked with red crosses in the Dense Room are physically impassible for the robot.",
+      "page": 14,
+      "index": 7,
+      "width": 516,
+      "height": 431
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-008.webp",
+      "caption": "Fig. 8: A sequence from the Face-to-Face scenario with the FI-BRT method demonstrates the robot’s successful behavior to circumvent an oncoming human, with snapshots taken at t=3.0, 5.0, and 7.0 seconds.",
+      "page": 12,
+      "index": 8,
+      "width": 516,
+      "height": 575
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-009.webp",
+      "caption": "Fig. 5: Simulated navigation costmap with static obstacles. Free space is shown in white; obstacles are shown in blue.",
+      "page": 9,
+      "index": 9,
+      "width": 516,
+      "height": 262
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17679v1/fig-010.webp",
+      "caption": "TABLE X: FI-BRT parameters used in both simulation and real-world experiments.",
+      "page": 16,
+      "index": 10,
+      "width": 438,
+      "height": 307
+    }
+  ]
+}

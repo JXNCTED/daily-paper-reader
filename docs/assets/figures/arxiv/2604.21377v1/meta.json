@@ -1,0 +1,102 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-001.webp",
+      "caption": "Figure 3. G1 robot within the a) test environment used for development and b) the final deployment at AD Ports Group installations during the competition day",
+      "page": 6,
+      "index": 1,
+      "width": 954,
+      "height": 396
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-002.webp",
+      "caption": "Table 4. Most frequently reported concerns related to interaction with the humanoid robot.",
+      "page": 11,
+      "index": 2,
+      "width": 368,
+      "height": 343
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-003.webp",
+      "caption": "Table 3. Safety, trust, cognitive effort, and learning metrics for direct participants. Columns indicate the response scale, mean score, standard deviation (SD) and number of respondents (N).",
+      "page": 11,
+      "index": 3,
+      "width": 926,
+      "height": 266
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-004.webp",
+      "caption": "Figure 7. Bar chart showing a summary of the safety, trust, and interaction learning results.",
+      "page": 11,
+      "index": 4,
+      "width": 723,
+      "height": 246
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-005.webp",
+      "caption": "Figure 4. Diagram of the circuit used during the challenge.",
+      "page": 7,
+      "index": 5,
+      "width": 548,
+      "height": 545
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-006.webp",
+      "caption": "Figure 6. Bar chart showing a summary of the direct interaction experience.",
+      "page": 10,
+      "index": 6,
+      "width": 735,
+      "height": 240
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-007.webp",
+      "caption": "Table 2. Direct interaction experience metrics reported by participants who interacted with the robot. Columns indicate the response scale, mean score, standard deviation (SD) and number of respondents (N).",
+      "page": 10,
+      "index": 7,
+      "width": 926,
+      "height": 229
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-008.webp",
+      "caption": "Figure 1. Unitree G1 humanoid robot used for the challenge",
+      "page": 4,
+      "index": 8,
+      "width": 414,
+      "height": 550
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-009.webp",
+      "caption": "Figure 8. Pie chart showing a summary of the qualitative feedback.",
+      "page": 12,
+      "index": 9,
+      "width": 700,
+      "height": 324
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-010.webp",
+      "caption": "Figure 5. Bar chart showcasing a summary of event-level outcomes split by attendee role (direct participants vs observers).",
+      "page": 9,
+      "index": 10,
+      "width": 715,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-011.webp",
+      "caption": "Table 1. Event-level survey results for the humanoid challenge. Columns indicate the response scale, mean score, standard deviation (SD) and number of respondents (N) split by attendee role (direct participants vs observers).",
+      "page": 9,
+      "index": 11,
+      "width": 982,
+      "height": 429
+    },
+    {
+      "url": "assets/figures/arxiv/2604.21377v1/fig-012.webp",
+      "caption": "Figure 2. BPMN diagram showcasing how communication happens between the human and the robot",
+      "page": 5,
+      "index": 12,
+      "width": 949,
+      "height": 561
+    }
+  ]
+}

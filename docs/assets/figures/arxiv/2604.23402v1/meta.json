@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.23402v1/fig-001.webp",
+      "caption": "Figure 3: Four design research cases with prototyping & iteration collages: Blo-nut [9, 12], TactorBots [121–123], Shape-Kit [120], Pelvic Chair [105, 106, 116]. Annotation: robotic touch modality (dark gray background), expressive quality and context (white background), design strategy (black background)",
+      "page": 6,
+      "index": 1,
+      "width": 1054,
+      "height": 954
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23402v1/fig-002.webp",
+      "caption": "Figure 6: Overview of our developed design languages as handles to help designers think and work with otherness in practices. It involves: Why-dimensions of touch meaning making, How-strategies in giving form to otherness, and Where-attributes in robotic touch system.",
+      "page": 14,
+      "index": 2,
+      "width": 1056,
+      "height": 429
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23402v1/fig-003.webp",
+      "caption": "Figure 2: Annotated Precedents of Expressive Robotics: Making Friends by Making Them [20], Expressive Tactile Controls [59], Outerspace [107], The Greeting Machine [3], Kip1 [49], ELEGNT [55], Goosebumps [53]. All images reproduced with permission. Copyright remains with the original authors/designers. Annotations: expressive modality (dark gray background), expressive quality (white background), design strategy (black background).",
+      "page": 4,
+      "index": 3,
+      "width": 1056,
+      "height": 598
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23402v1/fig-004.webp",
+      "caption": "Figure 5: Selected quotes from each design research case illustrating participants’ experiences of engaging with expressive robotic touch. We annotate key experiential themes (white background) and highlight dimensions of robotic touch meaningmaking (black background).",
+      "page": 12,
+      "index": 4,
+      "width": 1056,
+      "height": 807
+    },
+    {
+      "url": "assets/figures/arxiv/2604.23402v1/fig-005.webp",
+      "caption": "Figure 4: Deconstruction of four robotic touch systems into design and control attributes, with annotations highlighting attribute features (white background) and their connections to strategies shaping otherness (black background).",
+      "page": 9,
+      "index": 5,
+      "width": 1054,
+      "height": 942
+    }
+  ]
+}
